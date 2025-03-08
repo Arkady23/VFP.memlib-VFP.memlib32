@@ -15,6 +15,8 @@
 &emsp; [NewArray(n)](#newArrayn)  
 &emsp; [LenArray()](#LenArray)  
 &emsp; [PutArray(i, val)](#PutArrayi-val)  
+&emsp; [GetArray(i)](#GetArrayi)  
+&emsp; [CloseArray()](#CloseArray)  
 [Объект Dictionary](#Объект-Dictionary)  
 [История версий](#История-версий)  
 ### Назначение
@@ -96,6 +98,10 @@ oMem.closeStream()
 Метод возвращает длинну массива.
 ### PutArray(i, val)
 Метод присваивает элементу массива под номером первого числового параметра значение переданное вторым параметром произвольного типа.
+### GetArray(i)
+Метод возвращает значение элемента массива с номером переданным числовым параметром.
+### CloseArray()
+Метод уничтожает массив.
 ## Объект Dictionary
 Объект Dictionary имеет ниже следующие методы.
 ### История версий
