@@ -83,4 +83,4 @@ str = oMem.readToEnd()
 oMem.closeStream()
 ```
 ### История версий
-0.0.0.0. 08.03.2025. Опубликована первая рабочая версия с объектом Stream, Array и Dictionary.  
+0.0.0.0. 08.03.2025. Опубликована первая рабочая версия с объектами Stream, Array и Dictionary.  
