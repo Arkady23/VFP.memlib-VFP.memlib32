@@ -14,7 +14,7 @@
 [Объект Array](#Объект-Array)  
 &emsp; [NewArray(n)](#newArrayn)  
 &emsp; [LenArray()](#LenArray)  
-&emsp; [PutArray(i, val)](#PutArrayival)  
+&emsp; [PutArray(i, val)](#PutArrayi-val)  
 [Объект Dictionary](#Объект-Dictionary)  
 [История версий](#История-версий)  
 ### Назначение
