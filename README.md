@@ -42,6 +42,7 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.ne
 oMem = CreateObject('VFP.memlib')
 ```
 ## Объект Stream
+Объект Stream имеет ниже следующие методы.
 ### Write(str)
 Метод записывает указанную параметром строку в объект Stream.
 ```
