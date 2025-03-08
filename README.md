@@ -12,7 +12,9 @@
 &emsp; [ReadToEnd()](#ReadToEnd)  
 &emsp; [CloseStream()](#CloseStream)  
 [Объект Array](#Объект-Array)  
-&emsp; [newArray(n)](#newArrayn)  
+&emsp; [NewArray(n)](#newArrayn)  
+&emsp; [LenArray()](#LenArray)  
+&emsp; [PutArray(i, val)](#PutArrayival)  
 [Объект Dictionary](#Объект-Dictionary)  
 [История версий](#История-версий)  
 ### Назначение
@@ -88,7 +90,7 @@ oMem.closeStream()
 ```
 ## Объект Array
 Объект Array имеет ниже следующие методы.
-### newArray(n)
+### NewArray(n)
 Метод создает массив размером, передаваемым числовым параметром. В случае успешного создания массива метод возвращает число созданных элементов массива n. В противном случае возвращается ноль.
 ### LenArray()
 Метод возвращает длинну массива.
