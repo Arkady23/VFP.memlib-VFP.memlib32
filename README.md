@@ -12,8 +12,13 @@ Microsoft VFP имеет ряд ограничений, связанных с и
 oMem = CreateObject('VFP.memlib')
 ```
 ## Объект Stream
-### Write
-Метод Write записывает указанную параметром строку в объект Stream.
+### Write(string)
+Метод записывает указанную параметром строку в объект Stream.
 ```
 oMem.write('Привет, Мир!'+chr(10))
+```
+### lenStream()
+Метод подсчитывает количество записанных в объект Stream байт.
+```
+oMem.lenStream()
 ```
