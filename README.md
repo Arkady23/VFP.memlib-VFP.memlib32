@@ -11,6 +11,8 @@
 &emsp; [ReadLine()](#ReadLine)  
 &emsp; [ReadToEnd()](#ReadToEnd)  
 &emsp; [CloseStream()](#CloseStream)  
+[Объект Array](#Объект-Array)  
+[Объект Dictionary](#Объект-Dictionary)  
 [История версий](#История-версий)  
 ### Назначение
 Библиотека memlib.net.dll реализует COM-сервер для VFP9 или VFPA, ктоторый в принципе может использоваться и в любых других языках, поддерживающих COM технологию обмена данными.  
@@ -83,5 +85,9 @@ str = oMem.readToEnd()
 ```
 oMem.closeStream()
 ```
+## Объект Array
+Объект Array имеет ниже следующие методы.
+## Объект Dictionary
+Объект Dictionary имеет ниже следующие методы.
 ### История версий
 0.0.0.0. 08.03.2025. Опубликована первая рабочая версия с объектами Stream, Array и Dictionary.  
