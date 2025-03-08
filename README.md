@@ -5,7 +5,7 @@
 [Создание объекта VFP.memlib](#Создание-объекта-VFPmemlib)  
 [Объект Stream](#Объект-Stream)  
 [Write(str)](#Writestr)  
-[LenStream()"](#LenStream)  
+[LenStream()](#LenStream)  
 [Asc()](#Asc)  
 [Read(count)](#Readcount)  
 [ReadLine()](#ReadLine)  
