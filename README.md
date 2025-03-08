@@ -8,9 +8,9 @@
 &emsp; [LenStream()](#LenStream)  
 &emsp; [Asc()](#Asc)  
 &emsp; [Read(count)](#Readcount)  
-&emsp;[ReadLine()](#ReadLine)  
+&emsp; [ReadLine()](#ReadLine)  
 &emsp; [ReadToEnd()](#ReadToEnd)  
-&emsp;[CloseStream()](#CloseStream)  
+&emsp; [CloseStream()](#CloseStream)  
 [История версий](#История-версий)  
 ### Назначение
 Библиотека memlib.net.dll реализует COM-сервер для VFP9 или VFPA, ктоторый в принципе может использоваться и в любых других языках, поддерживающих COM технологию обмена данными.  
