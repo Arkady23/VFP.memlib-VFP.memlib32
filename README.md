@@ -23,7 +23,7 @@
 &emsp; [GetDic(strKey)](#GetDicstrKey)  
 &emsp; [DelDic(strKey)](#DelDicstrKey)  
 &emsp; [СloseDic()](#СloseDic)  
-[Объект Queue/FIFO](#Объект-Queue-FIFO)  
+[Объект Queue/FIFO](#Объект-QueueFIFO)  
 &emsp; [LenFIFO()](#LenFIFO)  
 &emsp; [PutFIFO(val)](#PutFIFOval)  
 &emsp; [PeekFIFO()](#GetFIFO)  
