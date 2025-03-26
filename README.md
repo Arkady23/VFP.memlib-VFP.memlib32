@@ -177,12 +177,12 @@ oT1=oMem.doAsync1(oVFP1,"DoCmd","wait wind '' time 55.2")
 * Метод Eval имеет один параметр:
 oT2=oMem.doAsync1(oVFP2,"Eval","2+2*2")
 ? oMem.WaitTask(oT2)    &&   6
-* Закрываем вторhой процесс VFP. Метод Quit не имеет параметров:
+* Закрываем второй процесс VFP. Метод Quit не имеет параметров:
 oMem.doAsync(oVFP2,"Quit")
 ? oMem.WaitTask(oT1)    && .NULL. -- задача не возвращает значение
 
 * Закрываем первый процесс VFP. Метод Quit не имеет параметров:
-oMem.doAsync(oVFP2,"Quit")
+oMem.doAsync(oVFP1,"Quit")
 ```  
 
 ### История версий
