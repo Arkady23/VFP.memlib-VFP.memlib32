@@ -167,9 +167,23 @@ oMem.closeStream()
 ### CloseTask(task)
 Метод освобождает сформированные в объекте VFP.memlib ресурсы задачи, указанной параметром, содержащим объект типа Task.
 ### Пример использования асинхронной задачи на языке Visual FoxPro для распараллеливания расчета
+```
+oMem=CreateO('VFP.memlib')
+oVFP1=CreateO('VisualFoxPro.Application')
+oVFP2=CreateO('VisualFoxPro.Application')
+* Эмитируем работу, выполняемую в течении 55.2 секунд в паралельном процессе:
+oT1=oMem.doAsync1(oVFP1,"DoCmd","wait wind '' time 55.2")
+* Тем временем вычисляем и возвращаем сумму чисел в другом процессе.
+* Метод Eval имеет один параметр:
+oT2=oMem.doAsync1(oVFP2,"Eval","2+2*2")
+? oMem.WaitTask(oT2)    &&   6
+* Закрываем вторhой процесс VFP. Метод Quit не имеет параметров:
+oMem.doAsync(oVFP2,"Quit")
+? oMem.WaitTask(oT1)    && .NULL. -- задача не возвращает значение
 
-
-
+* Закрываем первый процесс VFP. Метод Quit не имеет параметров:
+oMem.doAsync(oVFP2,"Quit")
+```  
 
 ### История версий
 0.0.0.0. 08.03.2025. Опубликована первая рабочая версия с объектами Stream, Array и Dictionary.  
