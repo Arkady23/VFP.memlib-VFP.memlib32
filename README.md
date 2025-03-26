@@ -36,8 +36,9 @@
 &emsp; [DoAsync2(com, method, val1, val2)](#DoAsync2com-method-val1-val2)  
 &emsp; [DoAsync3(com, method, val1, val2, val3)](#DoAsync3com-method-val1-val2-val3)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
-&emsp; [WaitTask(task)](#WaitTasktask)
+&emsp; [WaitTask(task)](#WaitTasktask)  
 &emsp; [CloseTask(task)](#CloseTasktask)  
+[Пример использования асинхронной задачи на языке Visual FoxPro для распараллеливания расчета](#ПримериспользованияасинхроннойзадачинаязыкеVisualFoxProдляраспараллеливаниярасчета)  
 
 [История версий](#История-версий)  
 ### Назначение
