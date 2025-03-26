@@ -171,10 +171,11 @@ oMem.closeStream()
 oMem=CreateO('VFP.memlib')
 oVFP1=CreateO('VisualFoxPro.Application')
 oVFP2=CreateO('VisualFoxPro.Application')
-* Эмитируем работу, выполняемую в течении 55.2 секунд в паралельном процессе:
+* Эмитируем работу, выполняемую в течении 55.2 секунд в паралельном процессе.
+* Метод DoCmd имеет один параметр - выполняемую команду:
 oT1=oMem.doAsync1(oVFP1,"DoCmd","wait wind '' time 55.2")
 * Тем временем вычисляем и возвращаем сумму чисел в другом процессе.
-* Метод Eval имеет один параметр:
+* Метод Eval имеет один параметр - выражение:
 oT2=oMem.doAsync1(oVFP2,"Eval","2+2*2")
 ? oMem.WaitTask(oT2)    &&   6
 * Закрываем второй процесс VFP. Метод Quit не имеет параметров:
