@@ -189,7 +189,7 @@ oMem.doAsync(oVFP2,"Quit")
 * Указываем тип массива с нулевого элемента для COM-объекта oVFP1:
 ComArray(oVFP1,10)
 dime vals(1)
-vals(1)="m.A+m.A*m.A"    && выражение
+vals(1)="m.A+m.A*m.A"   && выражение
 
 * Заносим значение переменной m.A синхронно с помощью метода SetVar:
 oVFP1.SetVar("A",2)
