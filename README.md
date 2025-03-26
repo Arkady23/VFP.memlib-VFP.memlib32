@@ -200,6 +200,10 @@ oT1=oMem.doAsyncN(oVFP1,"Eval", @vals)
 
 * Закрываем первый процесс VFP синхронно. Метод Quit не имеет параметров:
 oVFP1.Quit()
+
+oMem.CloseTask(oT1)
+oMem.CloseTask(oT2)
+rele oT1,oT2,oVFP1,oVFP2
 ```  
 
 ### История версий
