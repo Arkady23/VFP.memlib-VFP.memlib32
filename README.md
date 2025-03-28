@@ -169,9 +169,9 @@ oMem.CloseStream()
 oMem=CreateO('VFP.memlib')
 oVFP=CreateO('VisualFoxPro.Application')
 
-* Эмитируем работу, выполняемую в течении 55.2 секунд в паралельном процессе.
+* Эмитируем работу, выполняемую в течении 123.4 секунд в паралельном процессе.
 * Метод DoCmd имеет один параметр - выполняемую команду:
-oMem.doAsync1(oVFP,"DoCmd","wait wind '' time 55.2")
+oMem.doAsync1(oVFP,"DoCmd","wait wind '' time 123.4")
 
 * Тем временем вычисляем и возвращаем сумму чисел в текущем процессе.
 ? 2+2*2                 &&   6
