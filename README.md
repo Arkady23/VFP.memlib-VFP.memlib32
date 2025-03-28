@@ -178,7 +178,7 @@ oMem.doAsync1(oVFP,"DoCmd","wait wind '' time 55.2")
 
 * Формируем массив параметров размером в 1 элемент.
 * Указываем тип массива с нулевого элемента для COM-объекта oVFP:
-ComArray(oVFP,10)
+ComArray(oMem,10)
 dime vals(1)
 vals(1)="m.A+m.A*m.A"   && выражение
 
