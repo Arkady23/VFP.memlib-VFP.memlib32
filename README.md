@@ -37,7 +37,7 @@
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
 &emsp; [WaitTask()](#WaitTask)  
 &emsp; [CloseTask()](#CloseTask)  
-[Пример использования асинхронной задачи на языке Visual FoxPro](#Пример-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
+&emsp; [Пример использования асинхронной задачи на языке Visual FoxPro](#Пример-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [СloseAll()](#СloseAll)  
 
 [История версий](#История-версий)  
