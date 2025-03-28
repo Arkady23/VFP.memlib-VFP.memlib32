@@ -167,42 +167,39 @@ oMem.CloseStream()
 ### Пример использования асинхронной задачи на языке Visual FoxPro
 ```
 oMem=CreateO('VFP.memlib')
-oVFP1=CreateO('VisualFoxPro.Application')
-oVFP2=CreateO('VisualFoxPro.Application')
+oVFP=CreateO('VisualFoxPro.Application')
 
 * Эмитируем работу, выполняемую в течении 55.2 секунд в паралельном процессе.
 * Метод DoCmd имеет один параметр - выполняемую команду:
-oT1=oMem.doAsync1(oVFP1,"DoCmd","wait wind '' time 55.2")
+oMem.doAsync1(oVFP,"DoCmd","wait wind '' time 55.2")
 
-* Тем временем вычисляем и возвращаем сумму чисел в другом процессе.
-* Метод Eval имеет один параметр - выражение:
-oT2=oMem.doAsync1(oVFP2,"Eval","2+2*2")
-? oMem.WaitTask(oT2)    &&   6
+* Тем временем вычисляем и возвращаем сумму чисел в текущем процессе.
+? 2+2*2                 &&   6
 
-* Закрываем второй процесс VFP. Метод Quit не имеет параметров:
-oMem.doAsync(oVFP2,"Quit")
-? oMem.WaitTask(oT1)    && .NULL. -- задача не возвращает значение
-
-* Используем вариант обращения с массивом параметров размером в 1 элемент.
-* Указываем тип массива с нулевого элемента для COM-объекта oVFP1:
-ComArray(oVFP1,10)
+* Формируем массив параметров размером в 1 элемент.
+* Указываем тип массива с нулевого элемента для COM-объекта oVFP:
+ComArray(oVFP,10)
 dime vals(1)
 vals(1)="m.A+m.A*m.A"   && выражение
 
+* Завершаем запущенную асинхронно задачу:
+oMem.WaitTask()
+
 * Заносим значение в переменную m.A синхронно с помощью метода SetVar.
 * Метод SetVar требует два параметра:
-oVFP1.SetVar("A",2)
+oVFP.SetVar("A",2)
 
 * Выполняем вычисление асинхронно с использованием массива параметров:
-oT1=oMem.doAsyncN(oVFP1,"Eval", @vals)
-? oMem.WaitTask(oT1)    &&   6
+oMem.doAsyncN(oVFP,"Eval", @vals)
 
-* Закрываем первый процесс VFP синхронно. Метод Quit не имеет параметров:
-oVFP1.Quit()
+* Получаем результат вычисления асинхронной задачи:
+? oMem.WaitTask()       &&   6
 
-oMem.CloseTask(oT1)
-oMem.CloseTask(oT2)
-rele oT1,oT2,oVFP1,oVFP2
+* Закрываем процесс VFP синхронно. Метод Quit не имеет параметров:
+oVFP.Quit()
+
+oMem.CloseTask()
+rele oVFP
 ```  
 ### СloseAll()
 Метод закрывает все объекты COM-сервера и максимально освобождает всю память.
