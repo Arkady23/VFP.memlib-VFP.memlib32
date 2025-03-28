@@ -171,7 +171,7 @@ oVFP=CreateO('VisualFoxPro.Application')
 
 * Эмитируем работу, выполняемую в течении 123.4 секунд в паралельном процессе.
 * Метод DoCmd имеет один параметр - выполняемую команду:
-oMem.doAsync1(oVFP,"DoCmd","wait wind '' time 123.4")
+oMem.DoAsync1(oVFP,"DoCmd","wait wind '' time 123.4")
 
 * Тем временем вычисляем и возвращаем сумму чисел в текущем процессе.
 ? 2+2*2                 &&   6
@@ -191,7 +191,7 @@ oMem.WaitTask()
 oVFP.SetVar("A",2)
 
 * Выполняем вычисление асинхронно с использованием массива параметров:
-oMem.doAsyncN(oVFP,"Eval", @vals)
+oMem.DoAsyncN(oVFP,"Eval", @vals)
 
 * Получаем результат вычисления асинхронной задачи:
 ? oMem.WaitTask()       &&   6
