@@ -226,9 +226,9 @@ EVENTHANDLER(oMem, oCallback)
 oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
 
 ? tran(seco())+" Старт"
-wait wind '' time 10    && Через 2.3 секунды должен быть выведен
+wait wind '' time 10
+? tran(seco())          && Через 2.3 секунды должен быть выведен
                         && результат через метод обратного вызова
-? tran(seco())
 wait wind '' time 10
 ? tran(seco())
 
@@ -246,6 +246,7 @@ rele oVFP
 DEFINE CLASS MemCallback as Session
   IMPLEMENTS ITask IN 'VFP.memlib'
 
+  * Метод, получающий обратный вызов:
   PROCEDURE ITask_OnEnded(ret)
     ? tran(seco())+" Возвращено значение типа "+type('m.ret')+" {"+m.ret+"}"
   ENDPROC
