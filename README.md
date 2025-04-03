@@ -168,13 +168,14 @@ oMem.CloseStream()
 ### WaitTask()
 Если требуется, метод ожидает завершения задачи. Метод возвращает сформированный результат. Если задача не формирует результат, то возвращается пустая строка.
 ### ITask_OnEnded(ret)
-Метод обеспечивает обратный вызов через интефейс ITask и событие OnEnded. Если обнаруживается этот метод на вызывающей стороне, то он получает управление после завершения задачи. Смотрите ниже приведенный пример на языке Visual FoxPro. Параметром является сформированный результат закончившейся задачи или пустая строка.  
+Метод обеспечивает обратный вызов через интефейс ITask и событие OnEnded. Параметром является сформированный результат закончившейся задачи или пустая строка. Если обнаруживается этот метод на вызывающей стороне, то он получает управление после завершения задачи. Смотрите ниже приведенный пример на языке Visual FoxPro.  
 
 Благодарность. Метод добавлен благодоря усилиям [Дмитрия Чунихина](https://github.com/dmitriychunikhin).
 ### CloseTask()
 Метод освобождает сформированные в объекте VFP.memlib ресурсы задачи.
 ### Примеры использования асинхронной задачи на языке Visual FoxPro
-```Без использования обратного вызова
+Пример 1. Без использования обратного вызова:
+```
 oMem=CreateO('VFP.memlib')
 oVFP=CreateO('VisualFoxPro.Application')
 
@@ -210,7 +211,31 @@ oVFP.Quit()
 
 oMem.CloseTask()
 rele oVFP
-```  
+```
+
+Пример 2. Использование обратного вызова:
+```
+oMem = CreateObject('VFP.memlib')
+oVFP = CreateO('VisualFoxPro.Application')
+oCallback = CREATEOBJECT("MemCallback")
+EVENTHANDLER(oMem, oCallback)
+
+oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
+
+? tran(seco())+" Старт"
+wait wind '' time 10
+? tran(seco())
+wait wind '' time 10
+? tran(seco())
+
+DEFINE CLASS MemCallback as Session
+  IMPLEMENTS ITask IN 'VFP.memlib'
+
+  PROCEDURE ITask_OnEnded(ret)
+    ? tran(seco())+" Возвращено значение типа "+type('m.ret')+" {"+m.ret+"}"
+  ENDPROC
+ENDDEFINE
+```
 ### СloseAll()
 Метод закрывает все объекты COM-сервера и максимально освобождает всю память.
 ### Обсуждение
