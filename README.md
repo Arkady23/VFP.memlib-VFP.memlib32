@@ -213,7 +213,7 @@ oMem.CloseTask()
 rele oVFP
 ```
 
-Пример 2. Использование обратного вызова:
+Пример 2. C использованием обратного вызова:
 ```
 oMem = CreateObject('VFP.memlib')
 oVFP = CreateO('VisualFoxPro.Application')
@@ -223,7 +223,8 @@ EVENTHANDLER(oMem, oCallback)
 oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
 
 ? tran(seco())+" Старт"
-wait wind '' time 10
+wait wind '' time 10       && Через 2.3 секунды должен быть выведен
+                           && результат через метод обратного вызова
 ? tran(seco())
 wait wind '' time 10
 ? tran(seco())
