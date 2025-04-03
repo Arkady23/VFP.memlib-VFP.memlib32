@@ -223,11 +223,22 @@ EVENTHANDLER(oMem, oCallback)
 oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
 
 ? tran(seco())+" Старт"
-wait wind '' time 10       && Через 2.3 секунды должен быть выведен
-                           && результат через метод обратного вызова
+wait wind '' time 10    && Через 2.3 секунды должен быть выведен
+                        && результат через метод обратного вызова
 ? tran(seco())
 wait wind '' time 10
 ? tran(seco())
+
+* Закрываем процесс VFP синхронно.
+oVFP.Quit()
+
+* Результат все еще можно вернуть:
+? oMem.WaitTask()       && В нашем случае пустая строка
+
+* Удаляем объект задачи:
+oMem.CloseTask()
+
+rele oVFP
 
 DEFINE CLASS MemCallback as Session
   IMPLEMENTS ITask IN 'VFP.memlib'
