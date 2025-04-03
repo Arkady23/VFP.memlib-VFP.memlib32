@@ -36,6 +36,7 @@
 &emsp; [DoAsync3(com, method, val1, val2, val3)](#DoAsync3com-method-val1-val2-val3)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
 &emsp; [WaitTask()](#WaitTask)  
+&emsp; [ITask_OnEnded(ret)](#ITask_OnEndedret)  
 &emsp; [CloseTask()](#CloseTask)  
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [СloseAll()](#СloseAll)  
