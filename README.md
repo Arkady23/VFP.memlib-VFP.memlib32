@@ -246,7 +246,7 @@ DEFINE CLASS Callback as Session
   IMPLEMENTS ITask IN 'VFP.memlib'
 
   * Метод, получающий обратный вызов:
-  PROCEDURE ITask_OnEnded(ret)
+  PROC ITask_OnEnded(ret)
     ? tran(seco())+" Возвращено значение типа "+type('m.ret')+" {"+m.ret+"}"
   ENDPROC
 ENDDEFINE
