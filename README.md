@@ -219,7 +219,7 @@ rele oVFP
 Пример 2. C использованием обратного вызова:
 ```
 oMem = CreateO('VFP.memlib')
-EVENTHANDLER(oMem, NewO("Callback"))
+EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
 oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
