@@ -218,7 +218,7 @@ rele oVFP
 
 Пример 2. C использованием обратного вызова:
 ```
-oMem = CreateObject('VFP.memlib')
+oMem = CreateO('VFP.memlib')
 oVFP = CreateO('VisualFoxPro.Application')
 EVENTHANDLER(oMem, NewO("Callback"))
 
