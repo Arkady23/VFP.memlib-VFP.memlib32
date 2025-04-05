@@ -220,8 +220,7 @@ rele oVFP
 ```
 oMem = CreateObject('VFP.memlib')
 oVFP = CreateO('VisualFoxPro.Application')
-oCallback = CREATEOBJECT("MemCallback")
-EVENTHANDLER(oMem, oCallback)
+EVENTHANDLER(oMem, NewO("Callback"))
 
 oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
 
@@ -243,7 +242,7 @@ oMem.CloseTask()
 
 rele oVFP
 
-DEFINE CLASS MemCallback as Session
+DEFINE CLASS Callback as Session
   IMPLEMENTS ITask IN 'VFP.memlib'
 
   * Метод, получающий обратный вызов:
