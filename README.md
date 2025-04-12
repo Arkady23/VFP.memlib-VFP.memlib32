@@ -65,6 +65,7 @@ Microsoft VFP имеет ряд ограничений, связанных с и
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /codebase /tlb
 ```
 Предварительно поместите файл memlib.net.dll в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
+
 Для удаления регистрации из Windows используйте ключ /unregister. Например:
 ```
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /unregister
