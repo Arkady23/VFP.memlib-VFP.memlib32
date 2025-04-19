@@ -184,7 +184,7 @@ oVFP=CreateO('VisualFoxPro.Application')
 
 * Эмитируем работу, выполняемую в течении 123.4 секунд в паралельном процессе.
 * Метод DoCmd имеет один параметр - выполняемую команду:
-oMem.DoAsync1(oVFP,"DoCmd","wait wind '' time 123.4")
+oMem.DoAsync(oVFP,"DoCmd","wait wind '' time 123.4")
 
 * Тем временем вычисляем и возвращаем сумму чисел в текущем процессе.
 ? 2+2*2                 &&   6
@@ -222,7 +222,7 @@ oMem = CreateO('VFP.memlib')
 EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
-oMem.DoAsync1(oVFP,"DoCMD","wait wind '' time 12.3")
+oMem.DoAsync(oVFP,"DoCMD","wait wind '' time 12.3")
 
 ? tran(seco())+" Старт"
 wait wind '' time 10
@@ -258,7 +258,7 @@ EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
 * Ошибка в команде:
-oMem.DoAsync1(oVFP,"DoCMD","wait wind '' :-) time 12.3")
+oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 
 read even
 
@@ -300,3 +300,4 @@ ENDDEFINE
 0.1.0.0. 05.04.2025. Устанвлена видимость интерфейса ITask по умолчанию.  
 0.1.1.0. 06.04.2025. Методы DoAsyncX теперь возвращают 0 в случае успеха. Предусмотрена обработка замеченных исключений.  
 0.1.2.0. 09.04.2025. Добавлен обратный вызов при возникновении ошибки в асинхронной задаче.  
+0.1.3.0. 19.04.2025. Вместо нескольких методов создания асинхронной задачи с разным количеством параметров сделан один универсальный метод с количеством параметров до 10.  
