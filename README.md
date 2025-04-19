@@ -1,4 +1,4 @@
-# VFP.memlib — memlib.net.dll
+# VFP.memlib и VFP.memlib32
 ### Оглавление
 [Назначение](#Назначение)  
 [Регистрация COM-сервера в реестре Windows](#Регистрация-COM-сервера-в-реестре-Windows)  
