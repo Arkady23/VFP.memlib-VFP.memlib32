@@ -70,7 +70,7 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.ne
 Для выполнения вышеуказанных команд требуются права администратора.
 #### Для VFP9 и другого 32-х разрядного ПО
 Переименуйте memlib.net.dll в memlib32.net.dll. Используйте утилиту регистрации для 32-х разрядных программ, находящуюся по другому пути: C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe. Команды на регистрацию и удаление регистрации аналогичны командам для 64-х разрядного ПО.
-## Создание объекта VFP.memlib и VFP32.memlib
+## Создание объекта VFP.memlib и VFP.memlib32
 Текст кода на VFP:
 ```xBase
 oMem = CreateObject('VFP.memlib')
