@@ -2,7 +2,7 @@
 ### Оглавление
 [Назначение](#Назначение)  
 [Регистрация COM-сервера в реестре Windows](#Регистрация-COM-сервера-в-реестре-Windows)  
-[Создание объекта VFP.memlib](#Создание-объекта-VFPmemlib)  
+[Создание объекта VFP.memlib и VFP.memlib32](#Создание-объекта-VFPmemlib-и-VFP.memlib32)  
 [Объект Stream](#Объект-Stream)  
 &emsp; [Write(str)](#Writestr)  
 &emsp; [LenStream()](#LenStream)  
@@ -70,10 +70,14 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.ne
 Для выполнения вышеуказанных команд требуются права администратора.
 #### Для VFP9 и другого 32-х разрядного ПО
 Переименуйте memlib.net.dll в memlib32.net.dll. Используйте утилиту регистрации для 32-х разрядных программ, находящуюся по другому пути: C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe. Команды на регистрацию и удаление регистрации аналогичны командам для 64-х разрядного ПО.
-## Создание объекта VFP.memlib
+## Создание объекта VFP.memlib и VFP32.memlib
 Текст кода на VFP:
 ```xBase
 oMem = CreateObject('VFP.memlib')
+```
+и
+```xBase
+oMem = CreateObject('VFP.memlib32')
 ```
 ## Объект Stream
 Объект Stream имеет ниже следующие методы.
