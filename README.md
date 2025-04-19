@@ -2,7 +2,7 @@
 ### Оглавление
 [Назначение](#Назначение)  
 [Регистрация COM-сервера в реестре Windows](#Регистрация-COM-сервера-в-реестре-Windows)  
-[Создание объекта VFP.memlib и VFP.memlib32](#Создание-объекта-VFPmemlib-и-VFP.memlib32)  
+[Создание объекта VFP.memlib и VFP.memlib32](#Создание-объекта-VFPmemlib-и-VFPmemlib32)  
 [Объект Stream](#Объект-Stream)  
 &emsp; [Write(str)](#Writestr)  
 &emsp; [LenStream()](#LenStream)  
