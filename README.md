@@ -73,7 +73,7 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.ne
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe. Команды на регистрацию и удаление регистрации аналогичны командам
 для 64-х разрядного ПО. Например, регистрация:
 ```PowerShell
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /codebase
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /codebase /tlb
 ```
 и удаление регистрации:
 ```PowerShell
