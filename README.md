@@ -2,7 +2,7 @@
 ### Оглавление
 [Назначение](#Назначение)  
 [Регистрация COM-сервера в реестре Windows](#Регистрация-COM-сервера-в-реестре-Windows)  
-[Создание объекта VFP.memlib и VFP.memlib32](#Создание-объекта-VFPmemlib-и-VFPmemlib32)  
+[Создание объекта VFP.memlib32 и VFP.memlib](#Создание-объекта-VFPmemlib32-и-VFPmemlib)  
 [Объект Stream](#Объект-Stream)  
 &emsp; [Write(str)](#Writestr)  
 &emsp; [LenStream()](#LenStream)  
@@ -47,31 +47,17 @@
 
 Microsoft VFP имеет ряд ограничений, связанных с использованием ОП. Теоретически в VFP cуществуют способы использовать ОП до 2 Гб, но при этом возникают очень большие утечки памяти, приводящие к блокировке работы VFP.  
 
-При создании COM-объекта VFP.memlib или VFP.memlib32, выделяемая ОП не занимает место в области VFP. Эта память выделяется в объекте VFP.memlib/VFP.memlib32.  
+При создании COM-объекта VFP.memlib32 или VFP.memlib, выделяемая ОП не занимает место в области VFP. Эта память выделяется в объекте VFP.memlib32/VFP.memlib.  
 
-В memlib.net.dll/memlib32.net.dll реализованы:
+В memlib32.net.dll/memlib.net.dll реализованы:
 - объект Stream, который по используемым методам напоминает работу с файлом, находящимся в ОП;
 - объект Array, представляющий одномерный массив с числовым индексом;
 - объект Dictionary, представляющий одномерный массив с текстовым индексом (словарь);
 - объект Queue/FIFO, очередь, в которую помещаются любые переменные и объекты;
 - объект Task — асинхронная задача, создаваемая из метода любого COM-объекта.  
 ### Регистрация COM-сервера в реестре Windows
-#### Для VFPA и другого 64-х разрядного ПО
-Чтобы объект VFP.memlib был доступен в разрабатываемых программах 64-х битных версий, его нужно зарегистрировать в ОС с помощью утилиты regasm.exe с ключами /codebase и /tlb. Например:
-```PowerShell
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /codebase /tlb
-```
-Предварительно поместите файл memlib.net.dll в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
-
-Для удаления регистрации из Windows используйте ключ /unregister. Например:
-```PowerShell
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /unregister
-```
-Для выполнения вышеуказанных команд требуются права администратора.
 #### Для VFP9 и другого 32-х разрядного ПО
-Используйте утилиту регистрации для 32-х разрядных программ, находящуюся по другому пути:
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe. Команды на регистрацию и удаление регистрации аналогичны командам
-для 64-х разрядного ПО. Например, регистрация:
+Используйте утилиту регистрации regasm.exe **для 32-х разрядных программ**, находящуюся в папке C:\Windows\Microsoft.NET\Framework\v4.0.30319\, с ключами /codebase и /tlb. Например:
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /codebase /tlb
 ```
@@ -79,7 +65,19 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.ne
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /unregister
 ```
-## Создание объекта VFP.memlib и VFP.memlib32
+#### Для VFPA и другого 64-х разрядного ПО
+Чтобы объект VFP.memlib был доступен в разрабатываемых программах 64-х битных версий, его нужно зарегистрировать в ОС с помощью утилиты regasm.exe **для 64-х разрядных программ**, находящуюся в **другой папке** (**это важно**), с ключами /codebase и /tlb. Например:
+```PowerShell
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /codebase /tlb
+```
+Предварительно поместите файл memlib32.net.dll (или memlib.net.dll) в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
+
+Для удаления регистрации из Windows используйте ключ /unregister. Например:
+```PowerShell
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /unregister
+```
+Для выполнения вышеуказанных команд требуются права администратора.
+## Создание объекта VFP.memlib32 и VFP.memlib
 Текст кода на VFP:
 ```xBase
 oMem = CreateObject('VFP.memlib32')
