@@ -57,7 +57,7 @@ Microsoft VFP имеет ряд ограничений, связанных с и
 - объект Task — асинхронная задача, создаваемая из метода любого COM-объекта.  
 ### Регистрация COM-сервера в реестре Windows
 #### Для VFP9 и другого 32-х разрядного ПО
-Используйте утилиту регистрации regasm.exe **для 32-х разрядных программ**, находящуюся в папке C:\Windows\Microsoft.NET\Framework\v4.0.30319\, с ключами /codebase и /tlb. Пример регистрации:
+Используйте утилиту регистрации regasm.exe **для 32-х разрядных программ**, находящуюся в папке C:\Windows\Microsoft.NET\Framework\v4.0.30319, с ключами /codebase и /tlb. Пример регистрации:
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /codebase /tlb
 ```
@@ -66,7 +66,7 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.ne
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /unregister
 ```
 #### Для VFPA и другого 64-х разрядного ПО
-Чтобы объект VFP.memlib был доступен в разрабатываемых программах 64-х битных версий, его нужно зарегистрировать в ОС с помощью утилиты regasm.exe **для 64-х разрядных программ**, находящуюся в **другой папке** (**это важно**), с ключами /codebase и /tlb. Пример регистрации:
+Чтобы объект VFP.memlib был доступен в разрабатываемых программах 64-х битных версий, его нужно зарегистрировать в ОС с помощью утилиты regasm.exe **для 64-х разрядных программ**, находящуюся в **другой папке** (**это важно**) C:\Windows\Microsoft.NET\Framework64\v4.0.30319, с ключами /codebase и /tlb. Пример регистрации:
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /codebase /tlb
 ```
