@@ -82,11 +82,15 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.ne
 ## Создание объекта VFP.memlib и VFP.memlib32
 Текст кода на VFP:
 ```xBase
-oMem = CreateObject('VFP.memlib')
+oMem = CreateObject('VFP.memlib32')
 ```
 и
 ```xBase
-oMem = CreateObject('VFP.memlib32')
+oMem = CreateObject('VFP.memlib')
+```
+или универсальный вариант:
+```xBase
+oMem = CreateObject('VFP.memlib'+iif(sys(17)='Pentium','32',''))
 ```
 ## Объект Stream
 Объект Stream имеет ниже следующие методы.
@@ -189,7 +193,7 @@ oMem.CloseStream()
 ### Примеры использования асинхронной задачи на языке Visual FoxPro
 Пример 1. Без использования обратного вызова:
 ```xBase
-oMem=CreateO('VFP.memlib')
+oMem=CreateO('VFP.memlib'+iif(sys(17)='Pentium','32',''))
 oVFP=CreateO('VisualFoxPro.Application')
 
 * Эмитируем работу, выполняемую в течении 123.4 секунд в паралельном процессе.
@@ -228,7 +232,7 @@ rele oVFP
 
 Пример 2. C использованием обратного вызова:
 ```xBase
-oMem = CreateO('VFP.memlib')
+oMem = CreateO('VFP.memlib'+iif(sys(17)='Pentium','32',''))
 EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
@@ -263,7 +267,7 @@ ENDDEFINE
 ```
 Пример 3. C контролем возникновения ошибок:
 ```xBase
-oMem = CreateO('VFP.memlib')
+oMem = CreateO('VFP.memlib'+iif(sys(17)='Pentium','32',''))
 EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
