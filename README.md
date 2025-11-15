@@ -61,7 +61,9 @@ Microsoft VFP имеет ряд ограничений, связанных с и
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /codebase /tlb
 ```
-и удаление регистрации:
+Предварительно поместите файл memlib32.net.dll в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
+
+Для удаления регистрации из Windows используйте ключ /unregister:
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /unregister
 ```
@@ -70,9 +72,9 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.ne
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /codebase /tlb
 ```
-Предварительно поместите файл memlib32.net.dll (или memlib.net.dll) в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
+Предварительно поместите файл memlib.net.dll в удобную для вас папку, например, в папку, где находятся другие библиотеки Microsoft VFP.  
 
-Для удаления регистрации из Windows используйте ключ /unregister. Например:
+Для удаления регистрации из Windows используйте ключ /unregister:
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe D:\VFP\VFPA\memlib.net.dll /unregister
 ```
