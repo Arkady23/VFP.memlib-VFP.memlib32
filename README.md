@@ -67,6 +67,7 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.ne
 ```PowerShell
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe D:\VFP\VFP9\memlib32.net.dll /unregister
 ```
+Для выполнения вышеуказанных команд требуются права администратора.
 #### Для VFPA и другого 64-х разрядного ПО
 Чтобы объект VFP.memlib был доступен в разрабатываемых программах 64-х битных версий, его нужно зарегистрировать в ОС с помощью утилиты regasm.exe **для 64-х разрядных программ**, находящуюся в **другой папке** (**это важно**) C:\Windows\Microsoft.NET\Framework64\v4.0.30319, с ключами /codebase и /tlb. Пример регистрации:
 ```PowerShell
