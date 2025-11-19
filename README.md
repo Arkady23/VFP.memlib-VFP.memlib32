@@ -230,10 +230,10 @@ oVFP.Quit()
 oMem.CloseTask()
 rele oVFP
 ```
-
 Пример 2. C использованием обратного вызова и контролем возникновения ошибок:
 ```xBase
 oMem = CreateO('VFP.memlib32')
+*oMem = CreateO('VFP.memlib')
 EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
@@ -244,6 +244,7 @@ read even
 
 DEFINE CLASS Callback as Session
   IMPLEMENTS ITask IN 'VFP.memlib32'
+*  IMPLEMENTS ITask IN 'VFP.memlib'
 
   * Метод, получающий обратный вызов:
   PROC ITask_OnEnded(ret)
