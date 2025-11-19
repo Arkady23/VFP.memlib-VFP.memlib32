@@ -180,7 +180,7 @@ oMem.CloseStream()
 ### WaitTask()
 Если требуется, метод ожидает завершения задачи. Метод возвращает сформированный результат. Если задача не формирует результат, то возвращается пустая строка.
 ### ITask_OnError(errCode, errMsg)
-Метод обеспечивает обратный вызов через интефейс ITask и событие OnError. Параметрами являются номер ошибки и строка, содержащая текст описания ошибки, возникшей в асинхронной задаче. Если обнаруживается этот метод на вызывающей стороне, то он получает управление при возникновении ошибки. Смотрите ниже пример 3 на языке Visual FoxPro.  
+Метод обеспечивает обратный вызов через интефейс ITask и событие OnError. Параметрами являются номер ошибки и строка, содержащая текст описания ошибки, возникшей в асинхронной задаче. Если обнаруживается этот метод на вызывающей стороне, то он получает управление при возникновении ошибки. Смотрите ниже пример 2 на языке Visual FoxPro.  
 
 Примечание. VFPA версий до 2024 года не поддерживает работу интерфесов с обратными вызовами.  
 ### ITask_OnEnded(ret)
@@ -231,44 +231,9 @@ oMem.CloseTask()
 rele oVFP
 ```
 
-Пример 2. C использованием обратного вызова:
+Пример 2. C использованием обратного вызова и контролем возникновения ошибок:
 ```xBase
-oMem = CreateO('VFP.memlib'+iif(sys(17)='Pentium','32',''))
-EventHandler(oMem, NewO("Callback"))
-oVFP = CreateO('VisualFoxPro.Application')
-
-oMem.DoAsync(oVFP,"DoCMD","wait wind '' time 12.3")
-
-? tran(seco())+" Старт"
-wait wind '' time 10
-? tran(seco())          && Через 2.3 секунды должен быть выведен
-                        && результат через метод обратного вызова
-wait wind '' time 10
-? tran(seco())+" Конец"
-
-* Закрываем процесс VFP синхронно.
-oVFP.Quit()
-
-* Результат все еще можно вернуть:
-? oMem.WaitTask()       && В нашем случае пустая строка
-
-* Удаляем объект задачи:
-oMem.CloseTask()
-
-rele oVFP
-
-DEFINE CLASS Callback as Session
-  IMPLEMENTS ITask IN 'VFP.memlib'
-
-  * Метод, получающий обратный вызов:
-  PROC ITask_OnEnded(ret)
-    ? tran(seco())+" Возвращено значение типа "+type('m.ret')+" {"+m.ret+"}"
-  ENDPROC
-ENDDEFINE
-```
-Пример 3. C контролем возникновения ошибок:
-```xBase
-oMem = CreateO('VFP.memlib'+iif(sys(17)='Pentium','32',''))
+oMem = CreateO('VFP.memlib32')
 EventHandler(oMem, NewO("Callback"))
 oVFP = CreateO('VisualFoxPro.Application')
 
@@ -278,7 +243,7 @@ oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 read even
 
 DEFINE CLASS Callback as Session
-  IMPLEMENTS ITask IN 'VFP.memlib'
+  IMPLEMENTS ITask IN 'VFP.memlib32'
 
   * Метод, получающий обратный вызов:
   PROC ITask_OnEnded(ret)
