@@ -34,7 +34,7 @@
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
 &emsp; [WaitTask()](#WaitTask)  
 &emsp; [ITask_OnEnded(ret)](#ITask_OnEndedret)  
-&emsp; [ITask_OnError(cMethod)](#ITask_OnErrorerrCode-errMsg)  
+&emsp; [ITask_OnError(method)](#ITask_OnErrorerrCode-errMsg)  
 &emsp; [CloseTask()](#CloseTask)  
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [СloseAll()](#СloseAll)  
