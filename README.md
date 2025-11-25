@@ -232,9 +232,9 @@ rele oVFP
 ```
 Пример 2. C использованием обратного вызова и контролем возникновения ошибок:
 ```xBase
-oMem = CreateO('VFP.memlib32')
-*oMem = CreateO('VFP.memlib')
-EventHandler(oMem, NewO("Callback"))
+cBit=iif(sys(17)='Pentium','32','')
+oMem = CreateO('VFP.memlib'+m.cBit)
+EventHandler(oMem, NewO("Callback"+m.cBit))
 oVFP = CreateO('VisualFoxPro.Application')
 
 * Ошибка в команде:
@@ -242,29 +242,51 @@ oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 
 read even
 
-DEFINE CLASS Callback as Session
+PROC ITask_OnEnded(ret)
+  ? " Возвращено значение типа: "+type('m.ret')
+  Finish()
+ENDPROC
+
+PROC ITask_OnError(errCode, errMsg)
+  ? "ОШИБКА: "+tran(m.errCode)
+  ? m.errMsg
+  Finish()
+ENDPROC
+
+PROC Finish()
+  oMem.CloseTask()
+  oVFP.Quit()
+  clea even
+ENDPROC
+
+DEFINE CLASS Callback32 as Session
   IMPLEMENTS ITask IN 'VFP.memlib32'
-*  IMPLEMENTS ITask IN 'VFP.memlib'
 
   * Метод, получающий обратный вызов:
   PROC ITask_OnEnded(ret)
-    ? " Возвращено значение типа: "+type('m.ret')
-    this.Finish()
+    ITask_OnEnded(ret)
   ENDPROC
 
   * Метод, обработки ошибки в асинхронной задаче:
   PROC ITask_OnError(errCode, errMsg)
-    ? "ОШИБКА: "+tran(m.errCode)
-    ? m.errMsg
-    this.Finish()
+    ITask_OnError(errCode, errMsg)
   ENDPROC
 
-  * Завершение в любом случае
-  PROC Finish()
-    oMem.CloseTask()
-    oVFP.Quit()
-    clea even
+ENDDEFINE
+
+DEFINE CLASS Callback as Session
+  IMPLEMENTS ITask IN 'VFP.memlib'
+
+  * Метод, получающий обратный вызов:
+  PROC ITask_OnEnded(ret)
+    ITask_OnEnded(ret)
   ENDPROC
+
+  * Метод, обработки ошибки в асинхронной задаче:
+  PROC ITask_OnError(errCode, errMsg)
+    ITask_OnError(errCode, errMsg)
+  ENDPROC
+
 ENDDEFINE
 ```
 ### СloseAll()
