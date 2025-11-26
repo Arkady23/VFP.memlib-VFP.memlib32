@@ -237,7 +237,7 @@ oMem = CreateO('VFP.memlib'+m.cBit)
 EventHandler(oMem, NewO("Callback"+m.cBit))
 oVFP = CreateO('VisualFoxPro.Application')
 
-* Ошибка в команде:
+* Ошибка в асинхронно выполняемой команде:
 oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 
 * Здесь могут быть параллельно выполняемые команды
@@ -246,6 +246,7 @@ oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 * Дождаться выполнения:
 oMem.WaitTask()    && можно использовать read even
 
+* Другая асинхронно выполняемая команда:
 oMem.DoAsync(oVFP,"Eval","'Теперь '+'ошибки '+ 'нет!'")
 
 * Здесь могут быть параллельно выполняемые команды
