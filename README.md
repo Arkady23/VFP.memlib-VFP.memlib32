@@ -257,7 +257,6 @@ read even   && можно использовать oMem.WaitTask()
 oMem.CloseTask()
 oVFP.Quit()
 
-
 PROC ITask_OnEnded(ret)
   if type('m.ret')='C'
     ? m.ret
