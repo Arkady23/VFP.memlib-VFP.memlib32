@@ -240,21 +240,33 @@ oVFP = CreateO('VisualFoxPro.Application')
 * Ошибка в команде:
 oMem.DoAsync(oVFP,"DoCMD","wait wind '' :-) time 12.3")
 
-read even
+* Здесь могут быть параллельно выполняемые команды
+? "Первая задача выполняется..."
+
+* Дождаться выполнения:
+oMem.WaitTask()    && можно использовать read even
+
+oMem.DoAsync(oVFP,"Eval","'Теперь '+'ошибки '+ 'нет!'")
+
+* Здесь могут быть параллельно выполняемые команды
+? "Вторая задача выполняется..."
+
+* Дождаться выполнения:
+read even   && можно использовать oMem.WaitTask()
+
+oMem.CloseTask()
+oVFP.Quit()
+
 
 PROC ITask_OnEnded(ret)
-  ? " Возвращено значение типа: "+type('m.ret')
-  Finish()
+  if type('m.ret')='C'
+    ? m.ret
+  endi
+  clea even
 ENDPROC
 
 PROC ITask_OnError(сMethod)
   ? 'ОШИБКА в методе COM "'+m.сMethod+'"'
-  Finish()
-ENDPROC
-
-PROC Finish()
-  oMem.CloseTask()
-  oVFP.Quit()
   clea even
 ENDPROC
 
