@@ -279,7 +279,7 @@ DEFINE CLASS Callback32 as Session
     ITask_OnEnded(ret)
   ENDPROC
 
-  * Метод, обработки ошибки в асинхронной задаче:
+  * Метод обработки ошибки в асинхронной задаче:
   PROC ITask_OnError(сMethod)
     ITask_OnError(сMethod)
   ENDPROC
