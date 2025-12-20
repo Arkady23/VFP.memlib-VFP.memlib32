@@ -353,7 +353,6 @@ namespace memlib {
     public object ReadUtil(int n = 0) {
       if(n==0 || n>maxInt) n = maxInt;
       byte[] buf = new byte[n];
-      pu.StandardInput.Close();
       return eDos.GetString(buf,0,
              pu.StandardOutput.BaseStream.Read(buf,0,n));
     }
