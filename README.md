@@ -41,7 +41,7 @@
 &emsp; [RunAsync(cmd, [arguments])](#RunAsynccmd-arguments)  
 &emsp; [WriteUtil(string)](#WriteUtilstring)  
 &emsp; [ReadUtil([N])](#ReadUtilN)  
-&emsp; [СloseUtil()](#closeutil)  
+&emsp; [СloseUtil()](#CloseUtil)  
 [СloseAll()](#СloseAll)  
 
 [Обсуждение](#Обсуждение)  
