@@ -321,7 +321,6 @@ namespace memlib {
     public object RunAsync(string util, object arg = null) {
       var ps = new ProcessStartInfo();
       string par = string.Empty;
-      bool err = false;
       try {
         par = (string)arg;
       } catch(Exception) {
@@ -333,6 +332,7 @@ namespace memlib {
       ps.RedirectStandardInput = true;
       ps.RedirectStandardOutput = true;
       ps.Arguments = par;
+      CloseUtil();
       try {
         pu = Process.Start(ps);
       } catch(Exception) {
@@ -358,12 +358,23 @@ namespace memlib {
              pu.StandardOutput.BaseStream.Read(buf,0,n));
     }
 
+    public void CloseUtil() {
+      if(pu != null) {
+        try {
+          pu.StandardInput.Close();
+          pu.StandardOutput.Close();
+        } catch(Exception) { }
+        pu = null;
+      }
+    }
+
     // Удалить все объекты
     public void CloseAll() {
       CloseStream();
       CloseArray();
       CloseFIFO();
       CloseTask();
+      CloseUtil();
       CloseDic();
     }
   }
