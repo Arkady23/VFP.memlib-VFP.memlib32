@@ -35,6 +35,10 @@
 &emsp; [WaitTask()](#WaitTask)  
 &emsp; [ITask_OnEnded(ret)](#ITask_OnEndedret)  
 &emsp; [ITask_OnError(method)](#ITask_OnErrorerrCode-errMsg)  
+[Объект Util](#Объект-Util)  
+&emsp; [RunAsync(cmd, [arguments])](#RunAsynccmd-arguments)  
+&emsp; [WriteUtil(string)](#WriteUtilstring)  
+&emsp; [ReadUtil([N])](#ReadUtil-N)  
 &emsp; [CloseTask()](#CloseTask)  
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [СloseAll()](#СloseAll)  
@@ -189,8 +193,6 @@ oMem.CloseStream()
 Примечание. VFPA версий до 2024 года не поддерживает работу интерфесов с обратными вызовами.  
 
 Благодарность. Интерфейс ITask и его события добавлены благодоря усилиям [Дмитрия Чунихина](https://github.com/dmitriychunikhin).
-### CloseTask()
-Метод освобождает сформированные в объекте VFP.memlib ресурсы задачи.
 ### Примеры использования асинхронной задачи на языке Visual FoxPro
 Пример 1. Без использования обратного вызова:
 ```xBase
@@ -301,7 +303,14 @@ DEFINE CLASS Callback as Session
 
 ENDDEFINE
 ```
-### СloseAll()
+## Объект Util
+Объект Util позволяет запустить произвольную утутилиту или любую программу и взаимодействовать с ней через стандартный ввод/вывод. Объект Util имеет ниже следующие методы.
+### RunAsync(cmd, [arguments])
+Метод запускает утилиту без параметров или, если неоходимо, со строкой аргументов.
+### WriteUtil(string)
+Метод помещает строку в стандартный ввод утилиты.
+### ReadUtil([N])
+Метод читает N байт из стандартного вывода утилиты или, если не указан параметр N, весь поток стандартного вывода.### СloseAll()
 Метод закрывает все объекты COM-сервера и максимально освобождает всю память.
 ### Обсуждение
 Задать вопрос или обсудить тему, касающуюся VFP/VFPA, вы можете в разделе проекта `Issues` > `New issue`.
