@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.2.1.0                             26.11.2025  !!!
+//!!!  v0.3.0.0                             20.12.2025  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -10,6 +10,7 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Collections;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -32,9 +33,10 @@ namespace memlib {
     public event OnTaskCompletedDelegate OnEnded;
     public event OnTaskErrordDelegate OnError;
 
+    const int k0=0, k_1=-1, maxInt=67108832;
+    Encoding eDos = Encoding.GetEncoding(866);
     Dictionary<string, object> di;
     bool lWrite, tsEnd = true;
-    const int k0=0, k_1=-1;
     Queue<object> fifo;
     Task<object> ts;
     StringWriter sw;
@@ -42,6 +44,7 @@ namespace memlib {
     string cMethod;
     int lenS = k0;
     object[] ar;
+    Process pu;
 
     // метод записи в поток
     public void Write(string x) {
@@ -312,6 +315,47 @@ namespace memlib {
     public void CloseTask() {
       if(ts != null) try { ts.Dispose(); } catch(Exception) { }
       ts = null;
+    }
+
+    // Запустить утилиту
+    public object RunAsync(string util, object arg = null) {
+      var ps = new ProcessStartInfo();
+      string par = string.Empty;
+      bool err = false;
+      try {
+        par = (string)arg;
+      } catch(Exception) {
+        par = string.Empty;
+      }
+      ps.FileName = util;
+      ps.CreateNoWindow = true;
+      ps.UseShellExecute = false;
+      ps.RedirectStandardInput = true;
+      ps.RedirectStandardOutput = true;
+      ps.Arguments = par;
+      try {
+        pu = Process.Start(ps);
+      } catch(Exception) {
+        return false;
+      }
+      return true;
+    }
+
+    // Записать что-то в стандартный ввод утилиты
+    public void WriteUtil(string x) {
+      if(x.Length>0) {
+         byte[] buf = eDos.GetBytes(x);
+         pu.StandardInput.BaseStream.Write(buf,0,buf.Length);
+      }
+    }
+
+    // Прочитать из стандартного вывода утилиты всё или заданное количество символов
+    public object ReadUtil(int n = 0) {
+      if(n==0 || n>maxInt) n = maxInt;
+      byte[] buf = new byte[n];
+      pu.StandardInput.Close();
+      return eDos.GetString(buf,0,
+             pu.StandardOutput.BaseStream.Read(buf,0,n));
     }
 
     // Удалить все объекты
