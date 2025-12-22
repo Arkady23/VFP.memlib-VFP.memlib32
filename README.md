@@ -38,7 +38,7 @@
 &emsp; [CloseTask()](#CloseTask)  
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [Объект Util](#Объект-Util)  
-&emsp; [RunAsync(cmd, [arguments])](#RunAsynccmd-arguments)  
+&emsp; [RunAsync(cmd[, arguments])](#RunAsynccmd-arguments)  
 &emsp; [WriteUtil(string)](#WriteUtilstring)  
 &emsp; [ReadUtil([N])](#ReadUtilN)  
 &emsp; [CloseUtil()](#CloseUtil)  
