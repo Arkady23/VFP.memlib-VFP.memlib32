@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.3.0.0                             20.12.2025  !!!
+//!!!  v0.4.0.0                             08.01.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -44,6 +44,7 @@ namespace memlib {
     string cMethod;
     int lenS = k0;
     object[] ar;
+    string eOut;
     Process pu;
 
     // метод записи в поток
@@ -319,22 +320,26 @@ namespace memlib {
 
     // Запустить утилиту
     public object RunAsync(string util, object arg = null) {
-      var ps = new ProcessStartInfo();
       string par = string.Empty;
       try {
         par = (string)arg;
       } catch(Exception) {
         par = string.Empty;
       }
-      ps.FileName = util;
-      ps.CreateNoWindow = true;
-      ps.UseShellExecute = false;
-      ps.RedirectStandardInput = true;
-      ps.RedirectStandardOutput = true;
-      ps.Arguments = par;
       CloseUtil();
+      eOut = null;
+      pu = new Process();
+      pu.StartInfo.CreateNoWindow = true;
+      pu.StartInfo.UseShellExecute = false;
+      pu.StartInfo.RedirectStandardError = true;
+      pu.StartInfo.RedirectStandardInput = true;
+      pu.StartInfo.RedirectStandardOutput = true;
+      pu.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+                    { eOut += "\r\n" + e.Data; });
+      pu.StartInfo.FileName = util;
+      pu.StartInfo.Arguments = par;
       try {
-        pu = Process.Start(ps);
+        pu.Start();
       } catch(Exception) {
         return false;
       }
@@ -351,10 +356,21 @@ namespace memlib {
 
     // Прочитать из стандартного вывода утилиты всё или заданное количество символов
     public object ReadUtil(int n = 0) {
-      if(n==0 || n>maxInt) n = maxInt;
+      bool l = false;
+      if(n==0) {
+         n = maxInt;
+         l = true;
+      }else if(n>maxInt) {
+         n = maxInt;
+      }
       byte[] buf = new byte[n];
-      return eDos.GetString(buf,0,
-             pu.StandardOutput.BaseStream.Read(buf,0,n));
+      if (l) {
+        pu.BeginErrorReadLine();
+        pu.WaitForExit();
+        return eDos.GetString(buf,0,pu.StandardOutput.BaseStream.Read(buf,0,n)) + eOut;
+      } else {
+        return eDos.GetString(buf,0,pu.StandardOutput.BaseStream.Read(buf,0,n));
+      }
     }
 
     public void CloseUtil() {
