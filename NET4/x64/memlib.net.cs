@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.4.1.0                             07.02.2026  !!!
+//!!!  v0.4.2.0                             10.02.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -33,7 +33,7 @@ namespace memlib {
     public event OnTaskCompletedDelegate OnEnded;
     public event OnTaskErrordDelegate OnError;
 
-    const int k0=0, k1=1, k_1=-1, k9=23000, n2=2048, nbuf=4096, maxInt=67108832;
+    const int k0=0, k1=1, k_1=-1, n2=2048, nbuf=4096, maxInt=67108832;
     int[] n1 = new int[] { k0, n2 };
     Dictionary<string, object> di;
     Process[] pu = new Process[2];
@@ -45,6 +45,7 @@ namespace memlib {
     Task<object> ts;
     string cMethod;
     Encoding eDos;
+    Task<bool> tu;
     object[] ar;
     string eOut;
 
@@ -228,7 +229,7 @@ namespace memlib {
     }
 
     // Выполнить метод  COM асинхронно имея до 10 параметров
-    public int DoAsync(object com, string method, object p1 = null,
+    public object DoAsync(object com, string method, object p1 = null,
                        object p2 = null, object p3 = null, object p4 = null,
                        object p5 = null, object p6 = null, object p7 = null,
                        object p8 = null, object p9 = null, object p10 = null) {
@@ -260,15 +261,15 @@ namespace memlib {
     }
 
     // Выполнить метод  COM асинхронно с любым чисом параметров
-    public int DoAsyncN(object com, string method, ref object[] pars) {
+    public object DoAsyncN(object com, string method, ref object[] pars) {
       return runTaskAsync(com, method, pars);
     }
 
     // Выполнить метод COM асинхронно
-    int runTaskAsync(object com, string method, object[] pars) {
+    bool runTaskAsync(object com, string method, object[] pars) {
       if(tsEnd) CloseTask();
       if(ts != null) {
-        return k_1;
+        return false;
       } else {
         ts = Task<object>.Run(() => {
            object ret = null;
@@ -286,7 +287,7 @@ namespace memlib {
         });
         cMethod = method;
         tsEnd = false;
-        return k0;
+        return true;
       }
     }
 
@@ -322,48 +323,79 @@ namespace memlib {
     // Запустить утилиту
     public object RunAsync(string util, object arg = null, object cp = null) {
       byte[] buf = new byte[maxInt];
-      bool larg = true;
+      bool larg = true, lret = true;
       string[] args;
       string[] utils = util.Split('|');
+      int kp = k0;
       eDos = Encoding.GetEncoding(866);
 
       if(cp != null) {
-        try { eDos = Encoding.GetEncoding((int)cp); } catch(Exception) { }
+        try{ kp = (int)cp; } catch(Exception) { lret = false; }
       } else if(arg != null) {
-          try { eDos = Encoding.GetEncoding((int)arg); larg = false;
-          } catch(Exception) { };
+        try{ kp = (int)arg; larg = false; } catch(Exception) { }
       } else {
         larg = false;
       }
-      if(larg) {
-        args = (eDos.GetString(Encoding.GetEncoding(1251).GetBytes((string)arg))).Split('|');
-      } else {
-        args = new string[] {string.Empty};
+      if(lret && kp>k0) {
+        try { eDos = Encoding.GetEncoding(kp); } catch(Exception) { lret = false; }
       }
-      int i, p1, q = Math.Max(utils.Length,args.Length);
-      CloseUtil();
-      eOut = null;
-      p1 = k1;
-      for (i = k0; i<q; i++) {
-        pi = p1==k0? k1:k0;
-        pu[pi] = new Process();
-        pu[pi].StartInfo.CreateNoWindow = true;
-        pu[pi].StartInfo.UseShellExecute = false;
-        pu[pi].StartInfo.RedirectStandardError = true;
-        pu[pi].StartInfo.RedirectStandardInput = true;
-        pu[pi].StartInfo.RedirectStandardOutput = true;
-        pu[pi].StartInfo.StandardOutputEncoding = eDos;
-        pu[pi].ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
-                      { eOut += "\r\n" + e.Data; });
-        pu[pi].StartInfo.FileName = utils[i<utils.Length? i:(utils.Length-1)];
-        pu[pi].StartInfo.Arguments = args[i<args.Length? i:(args.Length-1)];
-        try { pu[pi].Start(); } catch(Exception) { return false; }
-        if (i > 0) pu[pi].StandardInput.BaseStream.Write(buf, 0,
-                   pu[p1].StandardOutput.BaseStream.Read(buf,0,buf.Length));
-        pu[pi].StandardInput.Close();
-        p1 = pi;
+      if(lret) {
+        if(larg) {
+          args = (eDos.GetString(Encoding.GetEncoding(1251).GetBytes((string)arg))).Split('|');
+        } else {
+          args = new string[] {string.Empty};
+        }
+        int i, p1, q = Math.Max(utils.Length,args.Length);
+        CloseUtil();
+
+        tu = Task<bool>.Run(() => {
+           eOut = null;
+           p1 = k1;
+           for (i = k0; i<q; i++) {
+             pi = p1==k0? k1:k0;
+             pu[pi] = new Process();
+             pu[pi].StartInfo.CreateNoWindow = true;
+             pu[pi].StartInfo.UseShellExecute = false;
+             pu[pi].StartInfo.RedirectStandardError = true;
+             pu[pi].StartInfo.RedirectStandardInput = true;
+             pu[pi].StartInfo.RedirectStandardOutput = true;
+             pu[pi].StartInfo.StandardOutputEncoding = eDos;
+             pu[pi].ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+                    { eOut += "\r\n" + e.Data; });
+             pu[pi].StartInfo.FileName = utils[i<utils.Length? i:(utils.Length-k1)];
+             pu[pi].StartInfo.Arguments = args[i<args.Length? i:(args.Length-k1)];
+             try { pu[pi].Start(); } catch(Exception) { return false; }
+             if (i > k0) pu[pi].StandardInput.BaseStream.Write(buf,k0,
+                        pu[p1].StandardOutput.BaseStream.Read(buf,k0,buf.Length));
+             pu[pi].StandardInput.Close();
+             p1 = pi;
+           }
+           return true;
+        });
+
       }
-      return true;
+      return lret;
+    }
+
+    // Записать что-то в стандартный ввод утилиты
+    public void WriteUtil(string x) {
+      if(tu != null) {
+         if(x.Length>k0) {
+            int i = 23;
+            bool l = true;
+            byte[] buf = eDos.GetBytes(x);
+            while (l) {
+               try {
+                 pu[pi].StandardInput.BaseStream.Write(buf,k0,buf.Length);
+                 l = false;
+               } catch(Exception) {
+                 Task.Delay(1).Wait();
+                 if(--i < k0) l = false;
+               }
+            }
+         }
+         pu[pi].StandardInput.Close();
+      }
     }
 
     // Прочитать из стандартного вывода утилиты всё или заданное количество символов
@@ -375,15 +407,25 @@ namespace memlib {
       }else if(n>maxInt) {
          n = maxInt;
       }
-      //pu[pi].WaitForExit(k9);
-      if (pu[pi].StandardOutput.Peek() < k0) {
-        return string.Empty;
-      } else if (l) {
-        pu[pi].BeginErrorReadLine();
-        return pu[pi].StandardOutput.ReadToEnd() + eOut;
+      if (tu != null) {
+        tu.Wait();
+        if(tu.Result) {
+          if (l) {
+            if(pu[pi].StandardOutput.Peek() < k0) {
+               return string.Empty;
+            } else {
+              pu[pi].BeginErrorReadLine();
+              return pu[pi].StandardOutput.ReadToEnd() + eOut;
+            }
+          } else {
+            char[] buf = new char[n];
+            return new string(buf,k0,pu[pi].StandardOutput.ReadBlock(buf,k0,n));
+          }
+        } else {
+          return "Utility not found";
+        }
       } else {
-        char[] buf = new char[n];
-        return new string(buf,0,pu[pi].StandardOutput.Read(buf,0,n));
+        return string.Empty;
       }
     }
 
@@ -397,6 +439,8 @@ namespace memlib {
           pu[i] = null;
         }
       }
+      if(tu != null) try { tu.Dispose(); } catch(Exception) { }
+      tu = null;
     }
 
     // Удалить все объекты
