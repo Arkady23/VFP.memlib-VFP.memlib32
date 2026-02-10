@@ -39,6 +39,7 @@
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [Объект Util](#Объект-Util)  
 &emsp; [RunAsync(cmd[, arguments][, codePage])](#RunAsynccmd-arguments-codePage)  
+&emsp; [WriteUtil(input)](#WriteUtilinput)  
 &emsp; [ReadUtil([N])](#ReadUtilN)  
 &emsp; [CloseUtil()](#CloseUtil)  
 [СloseAll()](#СloseAll)  
@@ -315,6 +316,8 @@ else
   ? Утилита не обнаружена
 endi
 ```
+### WriteUtil(input)
+Метод помещает стрку input, заданную параметром, в стандартный ввод утилиты, если та ожидает его. Далее поток закрывается и утилита начинает обработку.
 ### ReadUtil([N])
 Метод читает N байт из стандартного вывода утилиты или, если не указан параметр N, весь поток стандартного вывода. Например:
 ```xBase
