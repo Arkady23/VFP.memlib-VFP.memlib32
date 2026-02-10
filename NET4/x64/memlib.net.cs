@@ -389,7 +389,7 @@ namespace memlib {
                  pu[pi].StandardInput.BaseStream.Write(buf,k0,buf.Length);
                  l = false;
                } catch(Exception) {
-                 Task.Delay(1).Wait();
+                 Task.Delay(4).Wait();
                  if(--i < k0) l = false;
                }
             }
