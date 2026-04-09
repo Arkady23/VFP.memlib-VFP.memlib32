@@ -1,13 +1,14 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.4.2.0                             10.02.2026  !!!
+//!!!  v0.5.0.0                             09.04.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections;
@@ -34,20 +35,23 @@ namespace memlib {
     public event OnTaskErrordDelegate OnError;
 
     const int k0=0, k1=1, k_1=-1, n2=2048, nbuf=4096, maxInt=16777184;
+    CancellationTokenSource ctc, cts;
     int[] n1 = new int[] { k0, n2 };
     Dictionary<string, object> di;
     Process[] pu = new Process[2];
-    bool lWrite, tsEnd = true;
+    bool lWrite, tcEnd = true;
     int lenS = k0, pi = k0;
     Queue<object> fifo;
     StringWriter sw;
     StringReader sr;
-    Task<object> ts;
+    Task<object> tc;
     string cMethod;
     Encoding eDos;
     Task<bool> tu;
     object[] ar;
     string eOut;
+    object oCom;
+    Task ts;
 
     // метод записи в поток
     public void Write(string x) {
@@ -228,6 +232,28 @@ namespace memlib {
       fifo = null;
     }
 
+    // Послать сигнал через заданное время
+    public void SignalAsync(int tsig, object sig= null) {
+      CloseSignal();
+      if(!(sig!=null)) sig="Signal";
+      cts = new CancellationTokenSource();
+      ts= Task.Run(async () => {
+          try {
+            await Task.Delay(tsig, cts.Token);
+            OnEnded(sig);
+          } catch (Exception) { }
+      }, cts.Token);
+    }
+
+    // Освободить ресурсы, занятые задачей
+    public void CloseSignal() {
+      if(ts != null) try {
+         cts.Cancel();
+         ts.Dispose();
+      } catch(Exception) { }
+      ts= null;
+    }
+
     // Выполнить метод  COM асинхронно имея до 10 параметров
     public object DoAsync(object com, string method, object p1 = null,
                        object p2 = null, object p3 = null, object p4 = null,
@@ -267,38 +293,42 @@ namespace memlib {
 
     // Выполнить метод COM асинхронно
     bool runTaskAsync(object com, string method, object[] pars) {
-      if(tsEnd) CloseTask();
-      if(ts != null) {
+      if(tcEnd) CloseTask();
+      if(tc != null) {
         return false;
       } else {
-        ts = Task<object>.Run(() => {
+        oCom= com;
+        ctc = new CancellationTokenSource();
+        tc= Task<object>.Run(() => {
            object ret = null;
            try {
              ret = com.GetType().InvokeMember(
                  method,BindingFlags.InvokeMethod|BindingFlags.Instance|BindingFlags.Public,
                  null, com, pars);
-             tsEnd = true;
              OnEnded(ret);
-           } catch(Exception) {
-             tsEnd = true;
-             OnError(method);
+           } catch(Exception e) {
+             if(!ctc.IsCancellationRequested) {
+                 Exception realException = e.InnerException ?? e;
+                 OnError(method + ": " + realException.Message);
+             }
            }
+           tcEnd = true;
            return ret;
-        });
+        }, ctc.Token);
         cMethod = method;
-        tsEnd = false;
+        tcEnd = false;
         return true;
       }
     }
 
     // Получить результат асинхронной задачи
     public object WaitTask() {
-      if(ts != null) {
-        ts.Wait();
-        tsEnd = true;
+      if(tc != null) {
+        tc.Wait();
+        tcEnd = true;
         object ret = null;
         try {
-          ret = ts.Result !=null? ts.Result : string.Empty;
+          ret = tc.Result !=null? tc.Result : string.Empty;
         } catch(Exception) {
           OnError(cMethod);
         }
@@ -309,15 +339,23 @@ namespace memlib {
     }
 
     public memlib() {
-      tsEnd = true;
+      tcEnd = true;
       OnEnded = (object ret) => { };
       OnError = (string cMethod) => { };
     }
 
     // Освободить ресурсы, занятые задачей
     public void CloseTask() {
-      if(ts != null) try { ts.Dispose(); } catch(Exception) { }
-      ts = null;
+      if(tc != null) try {
+        ctc.Cancel();
+        if(Marshal.IsComObject(oCom)) Marshal.FinalReleaseComObject(oCom);
+        oCom= null;
+        tc.Dispose();
+      }
+      catch(Exception) { }
+      tc= null;
+      GC.Collect();
+      GC.WaitForPendingFinalizers();
     }
 
     // Запустить утилиту
@@ -447,10 +485,11 @@ namespace memlib {
     // Удалить все объекты
     public void CloseAll() {
       CloseStream();
+      CloseSignal();
       CloseArray();
       CloseFIFO();
-      CloseTask();
       CloseUtil();
+      CloseTask();
       CloseDic();
     }
   }
