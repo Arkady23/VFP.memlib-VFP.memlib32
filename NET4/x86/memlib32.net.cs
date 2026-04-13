@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.5.1.0                             13.04.2026  !!!
+//!!!  v0.5.2.0                             14.04.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -238,10 +238,8 @@ namespace memlib {
       if(!(sig!=null)) sig="Signal";
       cts = new CancellationTokenSource();
       ts= Task.Run(async () => {
-          try {
             await Task.Delay(tsig, cts.Token);
             OnEnded(sig);
-          } catch (Exception) { }
       }, cts.Token);
     }
 
