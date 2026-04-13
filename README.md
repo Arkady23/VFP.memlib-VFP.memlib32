@@ -34,7 +34,7 @@
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
 &emsp; [WaitTask()](#WaitTask)  
 &emsp; [ITask_OnEnded(ret)](#ITask_OnEndedret)  
-&emsp; [ITask_OnError(method)](#ITask_OnErrorerrCode-errMsg)  
+&emsp; [ITask_OnError(method)](#ITask_OnErrormethod)  
 &emsp; [CloseTask()](#CloseTask)  
 &emsp; [Примеры использования асинхронной задачи на языке Visual FoxPro](#Примеры-использования-асинхронной-задачи-на-языке-Visual-FoxPro)  
 [Объект Util](#Объект-Util)  
@@ -182,7 +182,7 @@ oMem.CloseStream()
 Объект Signal представляеет собой асинхронную задачу, которая через заданное число мс возвращает заданную строку в объекте, получающем события задач. Объект Signal имеет ниже следующие методы и интефейс ITask для обеспечения обратного вызова после завершения задачи.
 ### SignalAsync(nt[, name])
 Метод запускает асинхронную задачу, которая возвращает заданную вторым параметром строку или строку "Signal" через заданное первым параметром число мс.
-### ITask_OnEnded(ret)
+### ITask_OnEnded(name)
 Метод обеспечивает обратный вызов через интефейс ITask и событие OnEnded. Параметром является строка, содержащая имя сигнала. Смотрите ниже пример на языке Visual FoxPro.  
 
 Примечание. VFPA версий до 2024 года не поддерживает работу интерфесов с обратными вызовами.  
