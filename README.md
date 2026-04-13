@@ -31,6 +31,8 @@
 &emsp; [СloseFIFO()](#СloseFIFO)  
 [Объект Signal](#Объект-Signal)  
 &emsp; [SignalAsync(nt[, name])](#SignalAsyncnt-name)  
+&emsp; [ITask_OnEnded(name)](#ITask_OnEndedname)  
+&emsp; [CloseSignal()](#CloseSignal)  
 [Объект Task](#Объект-Task)  
 &emsp; [DoAsync(com, method[, v1[, v2[, v3[, v4[, v5[, v6[, v7[, v8[, v9[, v10]]]]]]]]]])](#DoAsynccom-method-v1-v2-v3-v4-v5-v6-v7-v8-v9-v10)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
