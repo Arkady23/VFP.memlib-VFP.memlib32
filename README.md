@@ -29,6 +29,8 @@
 &emsp; [PeekFIFO()](#GetFIFO)  
 &emsp; [GetFIFO()](#GetFIFO)  
 &emsp; [СloseFIFO()](#СloseFIFO)  
+[Объект Signal](#Объект-Signal)  
+&emsp; [SignalAsync(nt[, name])](#Signal-nt-name)  
 [Объект Task](#Объект-Task)  
 &emsp; [DoAsync(com, method[, v1[, v2[, v3[, v4[, v5[, v6[, v7[, v8[, v9[, v10]]]]]]]]]])](#DoAsynccom-method-v1-v2-v3-v4-v5-v6-v7-v8-v9-v10)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
