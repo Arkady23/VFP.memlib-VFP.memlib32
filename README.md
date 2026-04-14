@@ -33,6 +33,7 @@
 &emsp; [SignalAsync(nt[, name])](#SignalAsyncnt-name)  
 &emsp; [ITask_OnEnded(name)](#ITask_OnEndedname)  
 &emsp; [CloseSignal()](#CloseSignal)  
+&emsp; [Пример использования сигнала на языке Visual FoxPro](#Пример-использования-сигнала-на-языке-Visual-FoxPro)  
 [Объект Task](#Объект-Task)  
 &emsp; [DoAsync(com, method[, v1[, v2[, v3[, v4[, v5[, v6[, v7[, v8[, v9[, v10]]]]]]]]]])](#DoAsynccom-method-v1-v2-v3-v4-v5-v6-v7-v8-v9-v10)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
@@ -192,6 +193,8 @@ oMem.CloseStream()
 Примечание. VFPA версий до 2024 года не поддерживает работу интерфесов с обратными вызовами.  
 ### CloseSignal()
 Метод снимает задачу появления сигнала, если он еще не появился, и освобождает память этой задачи.
+### Пример использования сигнала на языке Visual FoxPro
+Пример.
 ## Объект Task
 Объект Task представляеет собой асинхронную задачу. Задача создается на основе метода открытого COM-объекта, такого как Excel.application, com.sun.star.frame.Desktop, VisualFoxPro.Application, ADODB.Connection и т.д. Метод представлятся строкой. Верхний или нижний регистр символов строки с методом имеют значение. Необходимо указывать точное название метода. Объект Task имеет ниже следующие методы и интефейс ITask для обеспечения обратного вызова после завершения задачи.
 ### DoAsync(com, method[, v1[, v2[, v3[, v4[, v5[, v6[, v7[, v8[, v9[, v10]]]]]]]]]])
