@@ -360,6 +360,51 @@ oMem.WriteUtil("Широка страна моя родная")
 Метод снимает задачу появления сигнала, если он еще не появился, и освобождает память этой задачи.
 ### Пример использования сигнала на языке Visual FoxPro
 Пример.
+```xBase
+oMem=CreateO('VFP.memlib32')
+EventHandler(oMem, NewO("Callback32"))
+
+clear
+? "Запускается задача с сигналом на 100 мс"
+lEnd=.t.
+t1=seco()
+oMem.SignalAsync(100)
+x=1000000
+
+DO WHILE m.lEnd
+   x=x-1
+   IF x=0
+      oMem.CloseSignal() && Снимаем сигнал
+      EXIT
+   ENDIF
+ENDDO
+
+? "x= "+tran(x)
+
+IF m.lEnd
+  ? "Цикл закончился штатно за "+tran(seco()-m.t1)+" c"
+ELSE
+  ? "Цикл закончился по времени..."
+ENDI
+
+* Класс объекта завершения задачи
+DEFINE CLASS Callback32 as Session
+  IMPLEMENTS ITask IN 'VFP.memlib32'
+
+  * Метод, получающий обратный вызов:
+  PROC ITask_OnEnded(ret)
+    IF m.ret="Signal"
+      lEnd=.f.
+    ENDI
+  ENDPROC
+
+  * Метод, включаемый в класс, для совместимости
+  PROC ITask_OnError(сErr)
+    ? 'Невероятная ОШИБКА "'+m.сErr+'"'
+  ENDPROC
+ENDDEFINE
+
+```
 ### СloseAll()
 Метод закрывает все объекты COM-сервера и максимально освобождает всю память.
 
