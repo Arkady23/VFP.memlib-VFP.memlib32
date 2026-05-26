@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
-//!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.5.2.0                             14.04.2026  !!!
+//!!!  memlib.net на C#.          Автор: A.Б.Корниенко  !!!
+//!!!  v0.6.0.0                             22.05.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -17,12 +17,19 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace memlib {
+  
+  [ComVisible(true)]
+  // НОВЫЙ уникальный GUID для 64-битного интерфейса
+  [Guid("B2C3D4E5-F6A7-4829-9101-112131415161")] 
   [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
   public interface ITask {
     void OnEnded(object ret);
     void OnError(string cMethod);
   }
 
+  [ComVisible(true)]
+  // НОВЫЙ уникальный GUID для 64-битного класса
+  [Guid("A1B2C3D4-E5F6-4718-8901-234567890ABC")] 
   [ComSourceInterfaces(typeof(ITask))]
   [ClassInterface(ClassInterfaceType.None)]
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -35,6 +42,7 @@ namespace memlib {
     public event OnTaskErrordDelegate OnError;
 
     const int k0=0, k1=1, k_1=-1, n2=2048, nbuf=4096, maxInt=67108832;
+    Encoding vfpw = Encoding.GetEncoding(1251);
     CancellationTokenSource ctc, cts;
     int[] n1 = new int[] { k0, n2 };
     Dictionary<string, object> di;
@@ -42,8 +50,7 @@ namespace memlib {
     bool lWrite, tcEnd = true;
     int lenS = k0, pi = k0;
     Queue<object> fifo;
-    StringWriter sw;
-    StringReader sr;
+    MemoryStream ms;
     Task<object> tc;
     string cMethod;
     Encoding eDos;
@@ -53,84 +60,130 @@ namespace memlib {
     object oCom;
     Task ts;
 
-    // метод записи в поток
-    public void Write(string x) {
-      if(!(sw != null)) {
-        sw = new StringWriter();
+    // Метод записи в поток
+    public void Write(string b) {
+      lWrite = true;
+      if(ms == null) {
+        ms = new MemoryStream();
         lenS = k0;
       }
-      lenS += x.Length;
-      lWrite = true;
-      sw.Write(x);
+      if (b != null) {
+        // Раскладываем UTF-8 строку FoxPro на чистые байты
+        byte[] bytes = vfpw.GetBytes(b);
+
+        lenS += bytes.Length;
+        ms.Write(bytes, k0, bytes.Length);
+      }
     }
 
-    // метод чтения блока
-    public string Read(int count) {
-      if(StartRead()){
-        if(count>k0) {
-          char[] buf = new char[count];
-          sr.Read(buf, k0, count);
-          return new string(buf);
+    // Метод чтения блока
+    public object Read(int count) {
+      if (StartRead()) {
+        if(count > k0) {
+          // Защита от выхода за границы потока
+          int available = (int)(ms.Length - ms.Position);
+          int bytesToRead = Math.Min(count, available);
+          if (bytesToRead <= 0) return new byte[0];
+
+          byte[] b = new byte[bytesToRead];
+          ms.Read(b, k0, bytesToRead);
+          return b;  // в FoxPro будет тип Blob/Varbinary
         } else {
-          return string.Empty;
+          return new byte[0];
         }
       } else {
         return null;
       }
     }
 
-    // метод чтения кода символа
+    // Метод чтения кода символа
     public int Asc() {
-      return StartRead()? sr.Peek() : k_1;
+      if (StartRead() && ms.Position < ms.Length) {
+        return ms.ReadByte();   // Быстрое чтение одного байта
+      }
+      return k_1;
     }
 
-    // метод чтения записи из записанного потока
-    public string ReadLine() {
-      return StartRead()? sr.ReadLine() : null;
-    }
-
-    // метод чтения записи из записанного потока
-    public string ReadToEnd() {
-      return StartRead()? sr.ReadToEnd() : null;
-    }
-
+    // Подготовка потока к чтению
     bool StartRead() {
-      if(lWrite) CloseSr();
-      if(!(sr != null)) {
-        if(sw != null) {
-          sr = new StringReader(sw.ToString());
-          lWrite = false;
-          CloseSw();
-        } else {
-          return false;
-        }
+      if (ms == null) return false;
+      
+      if (lWrite) {
+        // Перематываем поток в начало для чтения, если до этого в него писали
+        ms.Position = 0; 
+        lWrite = false;
       }
       return true;
+    }
+
+    // Метод чтения записи из записанного потока
+    public object ReadLine() {
+      if(StartRead()) {
+        if (ms.Position >= ms.Length) return new byte[k0];
+        byte[] buf = ms.GetBuffer();
+        int k = (int)ms.Position;                  // текущая позиция чтения
+        int len = (int)(ms.Length - ms.Position);  // сколько байт осталось прочитать
+
+        // Быстрый поиск байта 10 (\n) во всем остатке массива
+        int i = Array.IndexOf(buf, (byte)10, k, len);
+
+        int m1 = k0; // длина результирующей строки в байтах
+        if(i >= k0) {
+
+          // Ситуация 1: Нашли символ 10. Проверяем, нет ли перед ним символа 13 (\r)
+          if(i > k && buf[i - 1] == 13) {
+            m1 = i - k - 1; // Длина строки без \r и без \n
+          } else {
+            m1 = i - k;     // Длина строки без \n
+          }
+      
+          // Сдвигаем курсор потока ms за символ 10, к началу следующей строки
+          ms.Position = i + 1;
+        } else {
+
+          // Ситуация 2: Символ 10 не найден. Значит, это последняя строка без переноса на конце
+          m1 = len;
+      
+          // Сдвигаем курсор в самый конец потока
+          ms.Position = ms.Length;
+        }
+
+        // Если строка оказалась пустой (например, пустая строка между \n\n)
+        if(m1 <= k0) return new byte[k0];
+
+        // Вырезаем и возвращаем чистый блок байт
+        byte[] result = new byte[m1];
+        Array.Copy(buf, k, result, k0, m1);
+
+        return result; // В FoxPro улетает Varbinary
+      } else {
+        return null;
+      }
+    }
+
+    // метод чтения записи из записанного потока
+    public object ReadToEnd() {
+      if(StartRead()) {
+        if (ms.Length <= 0) return new byte[0];
+        byte[] b = ms.ToArray();
+        ms.SetLength(0); // Очищаем буфер
+        return b; // В FoxPro прилетит Varbinary
+      }
+      return null;
     }
 
     public int LenStream() {
       return lenS;
     }
 
-    void CloseSw() {
-      if(sw != null) {
-        sw.Close();
-        sw.Dispose();
-      }
-      sw = null;
-    }
-
-    void CloseSr() {
-      if(sr != null) {
-        sr.Close();
-        sr.Dispose();
-      }
-      sr = null;
-    }
-
     public void CloseStream() {
-      CloseSw();
-      CloseSr();
+      lenS = k0;
+      lWrite = false;
+      if (ms != null) {
+        ms.Close();
+        ms.Dispose();
+        ms = null;
+      }
     }
 
     // Создать массив
