@@ -6,6 +6,7 @@
 [Объект Stream](#Объект-Stream)  
 &emsp; [Write(str)](#Writestr)  
 &emsp; [LenStream](#LenStream)  
+&emsp; [PosStream](#PosStream)  
 &emsp; [Asc()](#Asc)  
 &emsp; [Read(count)](#Readcount)  
 &emsp; [ReadLine()](#ReadLine)  
@@ -122,6 +123,10 @@ len = oMem.LenStream
 ```
 ### PosStream
 Свойство, 32-х разрядное положительное число, возвращает или устанавливает позицию в потоке начиная с нуля. Если задано очень большое или отрицательное число, позиция устанавливается в конец потока.
+Например, устанавливаем позицию в начало потока:
+```xBase
+oMem.PosStream = 0
+```
 ### Asc()
 Метод читает код первого за указателем чтения символа, но не перемещает указаль.
 ```xBase
