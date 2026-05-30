@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!                                                   !!!
 //!!!  memlib32.net на C#.        Автор: A.Б.Корниенко  !!!
-//!!!  v0.6.0.0                             22.05.2026  !!!
+//!!!  v0.6.1.0                             30.05.2026  !!!
 //!!!                                                   !!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -17,7 +17,56 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace memlib32 {
+
+  // 1. ОСНОВНОЙ ИНТЕРФЕЙС ДЛЯ СВОЙСТВ И МЕТОДОВ (Входящие команды)
+  // VFPA будет вызывать их напрямую из памяти, минуя медленный поиск по именам
+  [ComVisible(true)]
+  [Guid("6B23C4D5-E6F7-4A8B-BC0D-2E3F4A5B6C7D")]
+  [InterfaceType(ComInterfaceType.InterfaceIsDual)] // Dual включает vtable (Раннее связывание - скорость!)
+  public interface IMemLib32 {
+    // Каждое свойство и метод ОБЯЗАТЕЛЬНО должны быть прописаны здесь
+    MemoryStream VFPstream { get; }
+    int PosStream { get; set; }
+    void Write(string b);
+    object Read(int count);
+    int Asc();
+    object ReadLine();
+    object ReadToEnd();
+    int LenStream { get; }
+    void CloseStream();
+    int NewArray(int n);
+    int LenArray { get; }
+    void PutArray(int j, object a);
+    object GetArray(int j);
+    void CloseArray();
+    int LenDic { get; }
+    void PutDic(string key, object val);
+    object GetDic(string key);
+    void DelDic(string key);
+    void CloseDic();
+    int LenFIFO { get; }
+    void PutFIFO(object o);
+    object GetFIFO();
+    object PeekFIFO();
+    void CloseFIFO();
+    void SignalAsync(int tsig, object sig= null);
+    void CloseSignal();
+    void Wait(int tsig);
+    object DoAsync(object com, string method, object p1 = null,
+          object p2 = null, object p3 = null, object p4 = null,
+          object p5 = null, object p6 = null, object p7 = null,
+          object p8 = null, object p9 = null, object p10 = null);
+    object DoAsyncN(object com, string method, ref object[] pars);
+    object WaitTask(int timeoutMs=-1);
+    void CloseTask();
+    object RunAsync(string util, object arg = null, object cp = null);
+    void WriteUtil(string x);
+    object ReadUtil(int n = 0);
+    void CloseUtil();
+    void CloseAll();
+  }
   
+  // 2. ИНТЕРФЕЙС СОБЫТИЙ (Оставляем как у вас)
   [ComVisible(true)]
   [Guid("E3D12675-9C4B-4E38-B91A-FDF319A648A1")]   // фиксированный GUID для интерфейса
   [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -33,21 +82,23 @@ namespace memlib32 {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   [ProgId("VFP.memlib32")]  //!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  public class memlib32 {
+
+  // Наследование от интерфейса:
+  public class memlib32 : IMemLib32 {
+
     public delegate void OnTaskCompletedDelegate(object ret);
     public delegate void OnTaskErrordDelegate(string cMethod);
     public event OnTaskCompletedDelegate OnEnded;
     public event OnTaskErrordDelegate OnError;
 
-    const int k0=0, k1=1, k_1=-1, n2=2048, nbuf=4096, maxInt=16777184;
+    const int k0=0, k1=1, k_1=-1, n2=2048, maxInt=16777184;
     Encoding vfpw = Encoding.GetEncoding(1251);
     CancellationTokenSource ctc, cts;
     int[] n1 = new int[] { k0, n2 };
     Dictionary<string, object> di;
     Process[] pu = new Process[2];
-    bool lWrite, tcEnd = true;
-    int lenS = k0, pi = k0;
     Queue<object> fifo;
+    bool tcEnd = true;
     MemoryStream ms;
     Task<object> tc;
     string cMethod;
@@ -56,38 +107,55 @@ namespace memlib32 {
     object[] ar;
     string eOut;
     object oCom;
+    int pi = k0;
     Task ts;
+
+    void msCreate() {
+      if(ms == null) ms = new MemoryStream();
+    }
+
+    // СВОЙСТВО для доступа к объекту ms
+    public MemoryStream VFPstream {
+      get {
+        msCreate();
+        return ms;
+      }
+    }
+
+    public int PosStream {
+      get {
+        return ms != null? (int)ms.Position : k0;
+      }
+      set {
+        if(ms != null) ms.Position= (long)value;
+      }
+    }
 
     // Метод записи в поток
     public void Write(string b) {
-      lWrite = true;
-      if(ms == null) {
-        ms = new MemoryStream();
-        lenS = k0;
-      }
+      msCreate();
       if (b != null) {
         // Раскладываем UTF-8 строку FoxPro на чистые байты
         byte[] bytes = vfpw.GetBytes(b);
 
-        lenS += bytes.Length;
         ms.Write(bytes, k0, bytes.Length);
       }
     }
 
     // Метод чтения блока
     public object Read(int count) {
-      if (StartRead()) {
+      if (ms != null) {
         if(count > k0) {
           // Защита от выхода за границы потока
           int available = (int)(ms.Length - ms.Position);
           int bytesToRead = Math.Min(count, available);
-          if (bytesToRead <= 0) return new byte[0];
+          if (bytesToRead <= k0) return new byte[k0];
 
           byte[] b = new byte[bytesToRead];
           ms.Read(b, k0, bytesToRead);
           return b;  // в FoxPro будет тип Blob/Varbinary
         } else {
-          return new byte[0];
+          return new byte[k0];
         }
       } else {
         return null;
@@ -96,27 +164,15 @@ namespace memlib32 {
 
     // Метод чтения кода символа
     public int Asc() {
-      if (StartRead() && ms.Position < ms.Length) {
+      if (ms != null && ms.Position < ms.Length) {
         return ms.ReadByte();   // Быстрое чтение одного байта
       }
       return k_1;
     }
 
-    // Подготовка потока к чтению
-    bool StartRead() {
-      if (ms == null) return false;
-      
-      if (lWrite) {
-        // Перематываем поток в начало для чтения, если до этого в него писали
-        ms.Position = 0; 
-        lWrite = false;
-      }
-      return true;
-    }
-
     // Метод чтения записи из записанного потока
     public object ReadLine() {
-      if(StartRead()) {
+      if(ms != null) {
         if (ms.Position >= ms.Length) return new byte[k0];
         byte[] buf = ms.GetBuffer();
         int k = (int)ms.Position;                  // текущая позиция чтения
@@ -129,14 +185,14 @@ namespace memlib32 {
         if(i >= k0) {
 
           // Ситуация 1: Нашли символ 10. Проверяем, нет ли перед ним символа 13 (\r)
-          if(i > k && buf[i - 1] == 13) {
-            m1 = i - k - 1; // Длина строки без \r и без \n
+          if(i > k && buf[i - k1] == 13) {
+            m1 = i - k - k1;  // Длина строки без \r и без \n
           } else {
-            m1 = i - k;     // Длина строки без \n
+            m1 = i - k;       // Длина строки без \n
           }
       
           // Сдвигаем курсор потока ms за символ 10, к началу следующей строки
-          ms.Position = i + 1;
+          ms.Position = i + k1;
         } else {
 
           // Ситуация 2: Символ 10 не найден. Значит, это последняя строка без переноса на конце
@@ -161,22 +217,22 @@ namespace memlib32 {
 
     // метод чтения записи из записанного потока
     public object ReadToEnd() {
-      if(StartRead()) {
-        if (ms.Length <= 0) return new byte[0];
+      if(ms != null) {
+        if (ms.Length <= k0) return new byte[k0];
         byte[] b = ms.ToArray();
-        ms.SetLength(0); // Очищаем буфер
-        return b; // В FoxPro прилетит Varbinary
+        ms.SetLength(k0);    // Очищаем буфер
+        return b;            // В FoxPro прилетит Varbinary
       }
       return null;
     }
 
-    public int LenStream() {
-      return lenS;
+    public int LenStream {
+      get {
+        return ms!=null? (int)ms.Length : k0;
+      }
     }
 
     public void CloseStream() {
-      lenS = k0;
-      lWrite = false;
       if (ms != null) {
         ms.Close();
         ms.Dispose();
@@ -194,8 +250,10 @@ namespace memlib32 {
       }
     }
 
-    public int LenArray() {
-      return ar != null? ar.Length : k0;
+    public int LenArray {
+      get {
+        return ar != null? ar.Length : k0;
+      }
     }
 
     // Присвоить значение
@@ -214,8 +272,10 @@ namespace memlib32 {
       ar = null;
     }
 
-    public int LenDic() {
-      return di != null? di.Count : k0;
+    public int LenDic {
+      get {
+        return di != null? di.Count : k0;
+      }
     }
 
     // Добавить значение
@@ -249,8 +309,10 @@ namespace memlib32 {
       di = null;
     }
 
-    public int LenFIFO() {
-      return fifo != null? fifo.Count : k0;
+    public int LenFIFO {
+      get {
+        return fifo != null? fifo.Count : k0;
+      }
     }
 
     // Добавить значение
@@ -313,31 +375,13 @@ namespace memlib32 {
                        object p2 = null, object p3 = null, object p4 = null,
                        object p5 = null, object p6 = null, object p7 = null,
                        object p8 = null, object p9 = null, object p10 = null) {
-      object[] pars;
-      if(!(p1 != null)) {
-        pars = new object[] { };
-      } else if(!(p2 != null)) {
-        pars = new object[] { p1 };
-      } else if(!(p3 != null)) {
-        pars = new object[] { p1,p2 };
-      } else if(!(p4 != null)) {
-        pars = new object[] { p1,p2,p3 };
-      } else if(!(p5 != null)) {
-        pars = new object[] { p1,p2,p3,p4 };
-      } else if(!(p6 != null)) {
-        pars = new object[] { p1,p2,p3,p4,p5 };
-      } else if(!(p7 != null)) {
-        pars = new object[] { p1,p2,p3,p4,p5,p6 };
-      } else if(!(p8 != null)) {
-        pars = new object[] { p1,p2,p3,p4,p5,p6,p7 };
-      } else if(!(p9 != null)) {
-        pars = new object[] { p1,p2,p3,p4,p5,p6,p7,p8 };
-      } else if(!(p10 != null)) {
-        pars = new object[] { p1,p2,p3,p4,p5,p6,p7,p8,p9 };
-      } else {
-        pars = new object[] { p1,p2,p3,p4,p5,p6,p7,p8,p9,p10 };
-      }
-      return runTaskAsync(com, method, pars);
+
+      object[] pars = new object[] { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 };
+      int count = Array.FindLastIndex(pars, p => p != null) + 1;
+      object[] args = new object[count];
+      if(count > k0) Array.Copy(pars, args, count);
+
+      return runTaskAsync(com, method, args);
     }
 
     // Выполнить метод  COM асинхронно с любым чисом параметров
@@ -347,11 +391,17 @@ namespace memlib32 {
 
     // Выполнить метод COM асинхронно
     bool runTaskAsync(object com, string method, object[] pars) {
-      if(tcEnd) CloseTask();
+      if(tcEnd) {
+        if (ctc != null) { ctc.Dispose(); ctc = null; }
+        if (tc != null) { tc.Dispose(); tc = null; }
+        tcEnd = false;
+      }
       if(tc != null) {
+        // Вероятно пердыдущая задача еще не закончилась
         return false;
+
       } else {
-        oCom= com;
+        oCom = com;
         ctc = new CancellationTokenSource();
         tc= Task<object>.Run(() => {
            object ret = null;
@@ -376,40 +426,58 @@ namespace memlib32 {
     }
 
     // Получить результат асинхронной задачи
-    public object WaitTask() {
+    public object WaitTask(int timeoutMs=k_1) {
       if(tc != null) {
-        tc.Wait();
+        if(!tc.Wait(timeoutMs)) return false;
         tcEnd = true;
-        object ret = null;
         try {
-          ret = tc.Result !=null? tc.Result : string.Empty;
+          return tc.Result ?? string.Empty;
         } catch(Exception) {
           OnError(cMethod);
         }
-        return ret;
+        return string.Empty;
       } else {
         return null;
       }
+    }
+
+    // Освободить ресурсы, занятые задачей
+    public void CloseTask() {
+      if(tc != null) {
+        // 1. Сигнализируем об отмене (на случай, если C# код еще может среагировать)
+        if(ctc != null && !ctc.IsCancellationRequested) ctc.Cancel();
+
+        // 2. Если задача ЗАВЕРШЕНА — мы можем безопасно уничтожить COM-объект
+        if(tc.IsCompleted) {
+          if(oCom != null && Marshal.IsComObject(oCom)) {
+            try { Marshal.FinalReleaseComObject(oCom); } catch { }
+          }
+          tc.Dispose();
+        } else {
+          // 3. ЕСЛИ ЗАДАЧА ЗАВИСЛА:
+          // То просто отвязываем нашу библиотеку от этого зависшего процесса.
+          // OnError("CloseTask: Задача зависла. Поток оставлен до самозавершения.");
+          OnError(string.Format("CloseTask: Task {0} hung. The thread is left until self-termination.",
+                  cMethod));
+        }
+      }
+
+      // Очищаем токен
+      if (ctc != null) {
+        try { ctc.Dispose(); } catch { }
+        ctc = null;
+      }
+
+      // Зануляем ссылки, чтобы C# забыл про эту задачу и объект
+      tcEnd = true;
+      oCom = null;
+      tc = null;
     }
 
     public memlib32() {
       tcEnd = true;
       OnEnded = (object ret) => { };
       OnError = (string cMethod) => { };
-    }
-
-    // Освободить ресурсы, занятые задачей
-    public void CloseTask() {
-      if(tc != null) try {
-        ctc.Cancel();
-        if(Marshal.IsComObject(oCom)) Marshal.FinalReleaseComObject(oCom);
-        oCom= null;
-        tc.Dispose();
-      }
-      catch(Exception) { }
-      tc= null;
-      GC.Collect();
-      GC.WaitForPendingFinalizers();
     }
 
     // Запустить утилиту
