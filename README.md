@@ -32,7 +32,7 @@
 [Объект Task](#Объект-Task)  
 &emsp; [DoAsync(com, method[, v1[, v2[, v3[, v4[, v5[, v6[, v7[, v8[, v9[, v10]]]]]]]]]])](#DoAsynccom-method-v1-v2-v3-v4-v5-v6-v7-v8-v9-v10)  
 &emsp; [DoAsyncN(com, method, @vals)](#DoAsyncNcom-method-vals)  
-&emsp; [WaitTask(timer)](#WaitTask-timer)  
+&emsp; [WaitTask(timer)](#WaitTasktimer)  
 &emsp; [ITask_OnEnded(ret)](#ITask_OnEndedret)  
 &emsp; [ITask_OnError(method)](#ITask_OnErrormethod)  
 &emsp; [CloseTask()](#CloseTask)  
