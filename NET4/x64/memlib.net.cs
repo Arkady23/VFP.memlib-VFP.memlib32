@@ -25,45 +25,45 @@ namespace memlib {
   [InterfaceType(ComInterfaceType.InterfaceIsDual)] // Dual включает vtable (Раннее связывание - скорость!)
   public interface IMemLib {
     // Каждое свойство и метод ОБЯЗАТЕЛЬНО должны быть прописаны здесь
-    MemoryStream VFPstream { get; }
-    int PosStream { get; set; }
-    void Write(string b);
-    object Read(int count);
     int Asc();
-    object ReadLine();
-    object ReadToEnd();
-    int LenStream { get; }
-    void CloseStream();
-    int NewArray(int n);
-    int LenArray { get; }
-    void PutArray(int j, object a);
-    object GetArray(int j);
-    void CloseArray();
-    int LenDic { get; }
-    void PutDic(string key, object val);
-    object GetDic(string key);
-    void DelDic(string key);
     void CloseDic();
-    int LenFIFO { get; }
-    void PutFIFO(object o);
+    void CloseAll();
     object GetFIFO();
-    object PeekFIFO();
     void CloseFIFO();
-    void SignalAsync(int tsig, object sig= null);
+    void CloseTask();
+    void CloseUtil();
+    object ReadLine();
+    void CloseArray();
+    object PeekFIFO();
+    object ReadToEnd();
+    void CloseStream();
     void CloseSignal();
+    int LenDic { get; }
+    int NewArray(int n);
     void Wait(int tsig);
+    int LenFIFO { get; }
+    void Write(string b);
+    int LenArray { get; }
+    int LenStream { get; }
+    object Read(int count);
+    object GetArray(int j);
+    void PutFIFO(object o);
+    void DelDic(string key);
+    void WriteUtil(string x);
+    object GetDic(string key);
+    object ReadUtil(int n = 0);
+    int PosStream { get; set; }
+    void PutArray(int j, object a);
+    MemoryStream VFPstream { get; }
+    object WaitTask(int timeoutMs=-1);
+    void PutDic(string key, object val);
+    void SignalAsync(int tsig, object sig= null);
     object DoAsync(object com, string method, object p1 = null,
           object p2 = null, object p3 = null, object p4 = null,
           object p5 = null, object p6 = null, object p7 = null,
           object p8 = null, object p9 = null, object p10 = null);
     object DoAsyncN(object com, string method, ref object[] pars);
-    object WaitTask(int timeoutMs=-1);
-    void CloseTask();
     object RunAsync(string util, object arg = null, object cp = null);
-    void WriteUtil(string x);
-    object ReadUtil(int n = 0);
-    void CloseUtil();
-    void CloseAll();
   }
   
   // 2. ИНТЕРФЕЙС СОБЫТИЙ (Оставляем как у вас)
@@ -127,7 +127,15 @@ namespace memlib {
         return ms != null? (int)ms.Position : k0;
       }
       set {
-        if(ms != null) ms.Position= (long)value;
+        // Проверяем, что поток инициализирован и не закрыт
+        if (ms != null && ms.CanSeek) {
+          try {
+            ms.Position = (long)value;
+          } catch (Exception) {
+            // Этот catch останется только для редких непредвиденных сбоев
+            ms.Position = ms.Length;
+          }
+        }
       }
     }
 
